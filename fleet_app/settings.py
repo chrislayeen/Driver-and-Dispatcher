@@ -66,20 +66,17 @@ DATABASES = {
 # Ensure Vercel uses SSL for Supabase
 DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
-# DEBUG: Print DB info for Vercel logs
-db_conn = DATABASES['default']
-print(f"--- DB DEBUG ---")
-print(f"HOST: {db_conn.get('HOST')}")
-print(f"PORT: {db_conn.get('PORT')}")
-print(f"----------------")
-
 # Supabase Storage Configuration (S3 Compatible)
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='fleet-assets')
 AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='ap-southeast-1')
 AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='')
-AWS_QUERYSTRING_AUTH = False  # Set to False to allow public links for public buckets
+
+# Clean Public URLs for Supabase
+# This makes images accessible without signatures (fixes "Missing signature" error)
+AWS_S3_CUSTOM_DOMAIN = f"ikahthbtlmaxolccsess.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}"
+AWS_QUERYSTRING_AUTH = False  
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 AWS_S3_SIGNATURE_VERSION = 's3v4'
