@@ -61,7 +61,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fleet_app.wsgi.application'
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+    'default': env.db('DATABASE_URL')
 }
 
 # Supabase Storage Configuration (S3 Compatible)
