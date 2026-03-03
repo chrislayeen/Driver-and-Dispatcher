@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/burgers.css' %}" />
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BURGERS">
     <style>
         .glass-btn {
             background: rgba(255, 255, 255, 0.15);
@@ -89,6 +93,18 @@
 
     <script>
         // Global Notification Polling & Push
+        let swRegistration = null;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/js/sw.js')
+                    .then(reg => {
+                        swRegistration = reg;
+                        console.log('SW Registered');
+                    });
+            });
+        }
+
         async function checkNotifications() {
             try {
                 const resp = await fetch('{% url "driver:get_notifications" %}');
@@ -105,8 +121,17 @@
                     if (latest.id != lastShownId) {
                         localStorage.setItem('last_notif_id', latest.id);
 
-                        // Trigger Push Notification
-                        if ("Notification" in window && Notification.permission === "granted") {
+                        // Trigger Notification via Service Worker (Best for Mobile)
+                        if (swRegistration && Notification.permission === "granted") {
+                            swRegistration.showNotification(latest.title, {
+                                body: latest.message,
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg",
+                                badge: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg",
+                                vibrate: [100, 50, 100],
+                                data: { url: '/driver/' }
+                            });
+                        } else if ("Notification" in window && Notification.permission === "granted") {
+                            // Fallback to legacy API
                             new Notification(latest.title, {
                                 body: latest.message,
                                 icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
@@ -119,21 +144,60 @@
             } catch (e) { console.error("Poll error", e); }
         }
 
-        // Clear notifications on bell click (simplification for this demo)
-        document.getElementById('notif-bell')?.addEventListener('click', async () => {
+        // Toggle Notification Modal
+        const notifModal = document.getElementById('notif-modal');
+        const notifContent = document.getElementById('notif-modal-content');
+        const notifList = document.getElementById('notif-list');
+
+        function openNotifModal() {
+            notifModal.classList.remove('hidden');
+            setTimeout(() => notifContent.classList.remove('translate-y-full'), 10);
+            renderNotifications();
+        }
+
+        function closeNotifModal() {
+            notifContent.classList.add('translate-y-full');
+            setTimeout(() => notifModal.classList.add('hidden'), 300);
+            document.getElementById('notif-badge').classList.add('hidden');
+        }
+
+        async function renderNotifications() {
             const resp = await fetch('{% url "driver:get_notifications" %}');
             const data = await resp.json();
-            for (const n of data.notifications) {
-                await fetch(`/driver/notifications/read/${n.id}/`, {
+            notifList.innerHTML = '';
+
+            if (data.notifications.length === 0) {
+                notifList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+                        <span class="material-symbols-outlined text-5xl mb-4 opacity-20">notifications_off</span>
+                        <p class="text-sm italic">All caught up!</p>
+                    </div>`;
+                return;
+            }
+
+            data.notifications.forEach(n => {
+                const item = document.createElement('div');
+                item.className = 'p-5 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all active:scale-[0.98]';
+                item.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <p class="font-bold text-slate-900 dark:text-white text-base">${n.title}</p>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${n.created_at}</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">${n.message}</p>
+                `;
+                notifList.appendChild(item);
+
+                // Mark as read in background
+                fetch(`/driver/notifications/read/${n.id}/`, {
                     method: 'POST',
                     headers: { 'X-CSRFToken': '{{ csrf_token }}' }
                 });
-            }
-            document.getElementById('notif-badge').classList.add('hidden');
-            if (data.unread_count > 0) {
-                alert("Latest Alert:\n" + data.notifications[0].title + ": " + data.notifications[0].message);
-            }
-        });
+            });
+        }
+
+        document.getElementById('notif-bell')?.addEventListener('click', openNotifModal);
+        document.getElementById('close-notif-btn')?.addEventListener('click', closeNotifModal);
+        document.getElementById('notif-modal-backdrop')?.addEventListener('click', closeNotifModal);
 
         setInterval(checkNotifications, 8000);
         document.addEventListener('DOMContentLoaded', () => {
@@ -143,6 +207,39 @@
             }
         });
     </script>
+
+    <!-- Premium Notification Modal -->
+    <div id="notif-modal" class="fixed inset-0 z-[100] hidden">
+        <div id="notif-modal-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div id="notif-modal-content"
+            class="absolute inset-x-0 bottom-0 z-[101] transform transition-transform duration-300 translate-y-full">
+            <div
+                class="relative flex h-[85vh] w-full flex-col bg-background-light dark:bg-background-dark rounded-t-[32px] overflow-hidden shadow-2xl mx-auto max-w-[430px] border-t border-slate-200 dark:border-slate-800">
+                <!-- Modal Handle -->
+                <div class="flex h-8 w-full items-center justify-center shrink-0">
+                    <div class="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                </div>
+
+                <!-- Modal Header -->
+                <div
+                    class="px-6 pb-4 pt-2 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Inbox</h2>
+                        <p class="text-primary font-bold text-[10px] uppercase tracking-widest mt-0.5">Fleet Alerts</p>
+                    </div>
+                    <button id="close-notif-btn"
+                        class="size-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Notification List -->
+                <div id="notif-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="{% static 'js/app.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
