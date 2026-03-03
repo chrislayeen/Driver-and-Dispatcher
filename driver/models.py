@@ -63,3 +63,18 @@ class IssuePhoto(models.Model):
 
     def __str__(self):
         return f"Photo for Issue {self.issue_id}"
+
+
+class Notification(models.Model):
+    title = models.CharField(max_length=100)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Associated trip for context
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name='notifications', null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.title} — {self.created_at.strftime('%Y-%m-%d %H:%M')}"

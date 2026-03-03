@@ -10,10 +10,11 @@
 {% endblock %}
 
 {% block header_right %}
-<button
+<button id="notif-bell"
     class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
     <span class="material-symbols-outlined text-xl">notifications</span>
-    <span class="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-red-500 border border-white"></span>
+    <div id="notif-badge"
+        class="absolute -top-1 -right-1 size-3 bg-red-600 rounded-full border-2 border-primary hidden"></div>
 </button>
 {% endblock %}
 

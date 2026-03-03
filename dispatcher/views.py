@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from driver.models import Inspection, Issue, Trip
+from driver.models import Inspection, Issue, Trip, Notification
 from dispatcher.models import DispatcherNote
 
 
@@ -39,6 +39,13 @@ def approve_inspection(request, pk):
                     trip.status = 'completed'
                     trip.save()
 
+        # Create notification for driver
+        Notification.objects.create(
+            title=f"Inspection {action.capitalize()}",
+            message=f"Your {inspection.get_inspection_type_display()} was {action} by dispatch.",
+            trip=inspection.trip
+        )
+
         DispatcherNote.objects.create(
             inspection_id=pk,
             note=note_text,
@@ -58,6 +65,14 @@ def resolve_issue(request, pk):
         issue = get_object_or_404(Issue, pk=pk)
         issue.status = 'resolved'
         issue.save()
+
+        # Create notification for driver
+        Notification.objects.create(
+            title="Issue Resolved",
+            message=f"Issue '{issue.description[:20]}...' has been marked as resolved.",
+            trip=issue.trip
+        )
+
         DispatcherNote.objects.create(
             issue_id=pk,
             note=request.POST.get('note', ''),

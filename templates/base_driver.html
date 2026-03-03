@@ -65,9 +65,12 @@
             <div class="flex items-center justify-end">
                 {% block header_right %}
                 <div class="flex items-center gap-3">
-                    <button
+                    <button id="notif-bell"
                         class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
                         <span class="material-symbols-outlined text-xl">notifications</span>
+                        <div id="notif-badge"
+                            class="absolute -top-1 -right-1 size-3 bg-red-600 rounded-full border-2 border-primary hidden">
+                        </div>
                     </button>
                     <a href="{% url 'role_select' %}"
                         class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
@@ -83,6 +86,63 @@
         </main>
         {% block footer %}{% endblock %}
     </div>
+
+    <script>
+        // Global Notification Polling & Push
+        async function checkNotifications() {
+            try {
+                const resp = await fetch('{% url "driver:get_notifications" %}');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                const badge = document.getElementById('notif-badge');
+
+                if (data.unread_count > 0) {
+                    badge.classList.remove('hidden');
+
+                    const latest = data.notifications[0];
+                    const lastShownId = localStorage.getItem('last_notif_id');
+
+                    if (latest.id != lastShownId) {
+                        localStorage.setItem('last_notif_id', latest.id);
+
+                        // Trigger Push Notification
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification(latest.title, {
+                                body: latest.message,
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                            });
+                        }
+                    }
+                } else {
+                    badge.classList.add('hidden');
+                }
+            } catch (e) { console.error("Poll error", e); }
+        }
+
+        // Clear notifications on bell click (simplification for this demo)
+        document.getElementById('notif-bell')?.addEventListener('click', async () => {
+            const resp = await fetch('{% url "driver:get_notifications" %}');
+            const data = await resp.json();
+            for (const n of data.notifications) {
+                await fetch(`/driver/notifications/read/${n.id}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                });
+            }
+            document.getElementById('notif-badge').classList.add('hidden');
+            if (data.unread_count > 0) {
+                alert("Latest Alert:\n" + data.notifications[0].title + ": " + data.notifications[0].message);
+            }
+        });
+
+        setInterval(checkNotifications, 8000);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkNotifications();
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        });
+    </script>
     <script src="{% static 'js/app.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

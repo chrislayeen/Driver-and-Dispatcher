@@ -1,8 +1,38 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
+from django.db import models
 
-from .models import Trip, Inspection, InspectionPhoto, Issue, IssuePhoto
+from .models import Trip, Inspection, InspectionPhoto, Issue, IssuePhoto, Notification
 from .forms import PreInspectionForm, PostInspectionForm, IssueForm
+
+
+def get_notifications(request):
+    """Returns unread notifications. In this demo, we filter by session's trip or recent."""
+    trip_id = request.session.get('trip_id')
+    if trip_id:
+        # Show notifications for current trip + any "global" (null trip) ones
+        notifications = Notification.objects.filter(models.Q(trip_id=trip_id) | models.Q(trip__isnull=True), is_read=False)
+    else:
+        notifications = Notification.objects.filter(is_read=False)[:5]
+
+    data = [
+        {
+            'id': n.id,
+            'title': n.title,
+            'message': n.message,
+            'created_at': n.created_at.strftime('%H:%M'),
+        } for n in notifications
+    ]
+    return JsonResponse({'notifications': data, 'unread_count': len(data)})
+
+
+def mark_notification_read(request, pk):
+    if request.method == 'POST':
+        notification = get_object_or_404(Notification, pk=pk)
+        notification.is_read = True
+        notification.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False}, status=400)
 
 
 def driver_home(request):

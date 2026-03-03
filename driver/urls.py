@@ -11,4 +11,6 @@ urlpatterns = [
     path('post-inspection/complete/', views.post_inspection_complete, name='post_inspection_complete'),
     path('inspection-status/<int:pk>/', views.inspection_status, name='inspection_status'),
     path('submit-issue/', views.submit_issue, name='submit_issue'),
+    path('notifications/', views.get_notifications, name='get_notifications'),
+    path('notifications/read/<int:pk>/', views.mark_notification_read, name='mark_notification_read'),
 ]
