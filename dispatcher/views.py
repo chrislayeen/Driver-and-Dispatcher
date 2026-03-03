@@ -5,12 +5,16 @@ from dispatcher.models import DispatcherNote
 
 
 def dispatcher_dashboard(request):
-    pending_count = Inspection.objects.filter(review_status='pending').count()
-    open_issues = Issue.objects.filter(status='open').count()
-    return render(request, 'dispatcher/dashboard.html', {
-        'pending_count': pending_count,
-        'open_issues': open_issues,
-    })
+    try:
+        pending_count = Inspection.objects.filter(review_status='pending').count()
+        open_issues = Issue.objects.filter(status='open').count()
+        return render(request, 'dispatcher/dashboard.html', {
+            'pending_count': pending_count,
+            'open_issues': open_issues,
+        })
+    except Exception as e:
+        from django.http import HttpResponse
+        return HttpResponse(f"Database Error: {str(e)}")
 
 
 def approvals(request):
