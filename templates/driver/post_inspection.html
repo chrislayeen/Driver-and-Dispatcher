@@ -206,20 +206,29 @@
                     document.getElementById('approvalTitle').textContent = 'Trip Complete!';
                     document.getElementById('approvalDesc').textContent = 'Your final inspection was approved. Redirecting...';
 
-                    // Push Notification
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("Trip Completed", {
-                            body: "Your post-trip inspection was approved. Great job today!",
-                            icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" // fallback icon 
-                        });
+                    // Push Notification (Safe wrapper)
+                    try {
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification("Trip Completed", {
+                                body: "Your post-trip inspection was approved. Great job today!",
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Notification error:", err);
                     }
 
-                    // Tell backend to clear session variables, then redirect home
-                    await fetch("{% url 'driver:post_inspection_complete' %}");
+                    // Add a "Finish Trip" button as a backup in case redirect fails
+                    document.getElementById('approvalDesc').innerHTML += '<br><button onclick="finishTrip()" class="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold">Finish Trip Now</button>';
 
-                    setTimeout(() => {
+                    // Helper function for clearing session and redirecting
+                    window.finishTrip = async () => {
+                        await fetch("{% url 'driver:post_inspection_complete' %}");
                         window.location.href = "{% url 'driver:home' %}";
-                    }, 2000);
+                    };
+
+                    // Auto-Redirect after 2s
+                    setTimeout(finishTrip, 2000);
 
                 } else if (statusJson.review_status === 'rejected') {
                     clearInterval(poll);
