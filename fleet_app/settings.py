@@ -14,7 +14,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-burgers-5driver-fleet-app-secret-key-2026')
 
-DEBUG = env.get_value('DEBUG', default=True)
+# Security: DEBUG should be False in production
+# On Vercel, the environment variable 'VERCEL' is usually present
+DEBUG = env.get_value('DEBUG', default=False) if not os.environ.get('VERCEL') else False
 
 ALLOWED_HOSTS = ['*']
 
@@ -63,8 +65,9 @@ WSGI_APPLICATION = 'fleet_app.wsgi.application'
 DATABASES = {
     'default': env.db('DATABASE_URL')
 }
-# Ensure Vercel uses SSL for Supabase
+# Ensure Vercel uses SSL for Supabase and stays connected (reduce handshake lag)
 DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
+DATABASES['default']['CONN_MAX_AGE'] = 600  # 10 minutes session persistence
 
 # Supabase Storage Configuration (S3 Compatible)
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')

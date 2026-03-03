@@ -1,5 +1,8 @@
 {
     "version": 2,
+    "regions": [
+        "sin1"
+    ],
     "builds": [
         {
             "src": "fleet_app/wsgi.py",
