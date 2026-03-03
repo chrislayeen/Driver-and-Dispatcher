@@ -218,8 +218,6 @@
                         console.error("Notification error:", err);
                     }
 
-                    // Add a "Proceed" button as a backup in case redirect fails
-                    document.getElementById('approvalDesc').innerHTML += '<br><button onclick="window.location.href=\'{% url "driver:in_progress" %}\'" class="mt-4 px-6 py-2 bg-[#0047FF] text-white rounded-lg font-bold">Start Trip Now</button>';
 
                     // Redirect after 2s
                     setTimeout(() => {

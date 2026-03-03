@@ -218,8 +218,6 @@
                         console.error("Notification error:", err);
                     }
 
-                    // Add a "Finish Trip" button as a backup in case redirect fails
-                    document.getElementById('approvalDesc').innerHTML += '<br><button onclick="finishTrip()" class="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-lg font-bold">Finish Trip Now</button>';
 
                     // Helper function for clearing session and redirecting
                     window.finishTrip = async () => {
