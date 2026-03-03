@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Dispatcher | BURGERS{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/burgers.css' %}" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#0047FF', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+                        slate: { 50: '#F8FAFC', 100: '#F1F5F9', 200: '#E2E8F0', 300: '#CBD5E1', 400: '#94A3B8', 500: '#64748B', 600: '#475569', 700: '#334155', 800: '#1E293B', 900: '#0F172A' }
+                    },
+                    fontFamily: { sans: ['Outfit', 'Inter', 'sans-serif'] },
+                }
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @layer base { :root { --primary:#0047FF; --background:#F8FAFC; --border:#F1F5F9; } body { @apply bg-[var(--background)] text-slate-900 font-sans antialiased; } }
+        .premium-card { @apply bg-white border border-[var(--border)] rounded-2xl transition-all duration-300; box-shadow:0 1px 2px 0 rgb(0 0 0/0.05); }
+        .premium-card:hover { @apply border-primary-200 -translate-y-0.5; box-shadow:0 20px 25px -5px rgb(0 0 0/0.05); }
+        .sidebar-item { @apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 transition-all duration-300 ease-in-out; }
+        .sidebar-item:hover { @apply text-primary-600 bg-primary-50/80 translate-x-1; }
+        .sidebar-item-active { @apply bg-primary-600 text-white shadow-md shadow-primary-600/20 translate-x-1; }
+        .glass-nav { @apply sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[var(--border)]; }
+        .status-badge { @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="flex min-h-screen">
+    <!-- Unified Sidebar -->
+    <aside class="w-72 bg-white border-r border-[var(--border)] flex flex-col fixed inset-y-0 z-50">
+        <div class="px-8 py-10">
+            <div class="flex items-center gap-3 mb-10">
+                <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+                    class="h-8">
+                <span
+                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary-600 py-1 px-2 bg-primary-50 rounded">Admin</span>
+            </div>
+            <nav class="space-y-2">
+                <a class="sidebar-item {% block nav_dashboard %}{% endblock %}" href="{% url 'dispatcher:dashboard' %}">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="text-sm font-semibold tracking-wide">Dashboard</span>
+                </a>
+                <a class="sidebar-item {% block nav_approvals %}{% endblock %}" href="{% url 'dispatcher:approvals' %}">
+                    <span class="material-symbols-outlined">fact_check</span>
+                    <span class="text-sm font-semibold tracking-wide">Approvals</span>
+                </a>
+                <a class="sidebar-item {% block nav_incidents %}{% endblock %}" href="{% url 'dispatcher:incidents' %}">
+                    <span class="material-symbols-outlined">emergency_home</span>
+                    <span class="text-sm font-semibold tracking-wide">Incidents</span>
+                </a>
+            </nav>
+        </div>
+        <div class="mt-auto px-8 py-8 border-t border-[var(--border)]">
+            <div class="flex items-center gap-4 mb-6">
+                <div
+                    class="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-400 text-2xl">person</span>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-slate-900">Dispatcher</p>
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Admin User</p>
+                </div>
+            </div>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold text-sm"
+                href="{% url 'role_select' %}">
+                <span class="material-symbols-outlined text-sm">logout</span>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1 ml-72 flex flex-col">
+        <!-- Header -->
+        <header class="h-20 glass-nav flex items-center justify-between px-10">
+            {% block page_header %}{% endblock %}
+        </header>
+        {% block content %}{% endblock %}
+    </main>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

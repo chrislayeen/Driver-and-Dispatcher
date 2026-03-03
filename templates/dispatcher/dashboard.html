@@ -1,0 +1,139 @@
+{% extends "base_dispatcher.html" %}
+{% load static %}
+{% block title %}Dashboard | BURGERS{% endblock %}
+{% block nav_dashboard %}sidebar-item-active{% endblock %}
+
+{% block page_header %}
+<div>
+    <h1 class="text-xl font-bold tracking-tight text-slate-900">Dispatcher Command</h1>
+    <p class="text-xs font-semibold text-slate-400 mt-0.5">Fleet Status Center &bull; Ready</p>
+</div>
+<div class="flex items-center gap-6">
+    <div class="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full border border-slate-200">
+        <span
+            class="w-2 h-2 rounded-full {% if pending_count > 0 or open_issues > 0 %}bg-red-500 animate-pulse{% else %}bg-slate-300{% endif %}"></span>
+        <span
+            class="text-xs font-bold {% if pending_count > 0 or open_issues > 0 %}text-red-600{% else %}text-slate-400{% endif %} uppercase tracking-wider">
+            {% if pending_count > 0 or open_issues > 0 %}Live Activity{% else %}No Activity{% endif %}
+        </span>
+    </div>
+    <div class="flex items-center gap-3">
+        <button
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:text-primary-600 hover:bg-white transition-all">
+            <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:text-primary-600 hover:bg-white transition-all">
+            <span class="material-symbols-outlined">settings</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="p-10 max-w-7xl mx-auto w-full space-y-10">
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="premium-card p-8 flex items-center justify-between group overflow-hidden relative">
+            <div class="relative z-10">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Pending Approvals</p>
+                <div class="flex items-baseline gap-2">
+                    <span
+                        class="text-5xl font-bold tracking-tighter {% if pending_count > 0 %}text-slate-900{% else %}text-slate-200{% endif %}">
+                        {% if pending_count > 0 %}{{ pending_count }}{% else %}--{% endif %}
+                    </span>
+                    {% if pending_count > 0 %}
+                    <span class="text-sm font-bold text-amber-500 uppercase tracking-wider">Action Needed</span>
+                    {% else %}
+                    <span class="text-sm font-bold text-slate-300 uppercase tracking-wider">No data</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div
+                class="w-20 h-20 rounded-3xl {% if pending_count > 0 %}bg-primary-50{% else %}bg-slate-50{% endif %} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                <span
+                    class="material-symbols-outlined {% if pending_count > 0 %}text-primary-600{% else %}text-slate-300{% endif %} text-4xl">fact_check</span>
+            </div>
+        </div>
+
+        <div class="premium-card p-8 flex items-center justify-between group overflow-hidden relative">
+            <div class="relative z-10">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Open Incidents</p>
+                <div class="flex items-baseline gap-2">
+                    <span
+                        class="text-5xl font-bold tracking-tighter {% if open_issues > 0 %}text-slate-900{% else %}text-slate-200{% endif %}">
+                        {% if open_issues > 0 %}{{ open_issues }}{% else %}--{% endif %}
+                    </span>
+                    {% if open_issues > 0 %}
+                    <span class="text-sm font-bold text-red-500 uppercase tracking-wider">Critical</span>
+                    {% else %}
+                    <span class="text-sm font-bold text-slate-300 uppercase tracking-wider">All Clear</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div
+                class="w-20 h-20 rounded-3xl {% if open_issues > 0 %}bg-red-50{% else %}bg-slate-50{% endif %} flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6">
+                <span
+                    class="material-symbols-outlined {% if open_issues > 0 %}text-red-500{% else %}text-slate-300{% endif %} text-4xl">warning_amber</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <!-- Approvals Card -->
+        <div class="premium-card flex flex-col h-full">
+            <div class="p-10 flex flex-col items-center text-center flex-1">
+                <div class="w-20 h-20 rounded-3xl bg-primary-50 flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary-400 text-4xl">fact_check</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 tracking-tight">Review Queue</h3>
+                {% if pending_count > 0 %}
+                <p class="text-[11px] font-bold text-amber-500 uppercase tracking-widest mb-6">{{ pending_count }}
+                    Pending Approval{% if pending_count != 1 %}s{% endif %}</p>
+                {% else %}
+                <p class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">No Pending Approvals</p>
+                {% endif %}
+                <p class="text-slate-400 text-sm leading-relaxed font-medium mb-10 max-w-xs">
+                    Incoming driver and freight documentation for regulatory compliance review.
+                </p>
+                <a href="{% url 'dispatcher:approvals' %}"
+                    class="w-full bg-primary-600 text-white font-bold h-14 rounded-2xl hover:bg-primary-700 transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary-600/15 group">
+                    Open Approvals Center
+                    <span
+                        class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">arrow_forward</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Incidents Card -->
+        <div class="premium-card flex flex-col h-full">
+            <div class="p-10 flex flex-col items-center text-center flex-1">
+                <div
+                    class="w-20 h-20 rounded-3xl {% if open_issues > 0 %}bg-red-50{% else %}bg-slate-50{% endif %} flex items-center justify-center mb-6">
+                    <span
+                        class="material-symbols-outlined {% if open_issues > 0 %}text-red-400{% else %}text-slate-300{% endif %} text-4xl">emergency_home</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2 tracking-tight">Incident Response</h3>
+                {% if open_issues > 0 %}
+                <p class="text-[11px] font-bold text-red-500 uppercase tracking-widest mb-6">{{ open_issues }} Active
+                    Incident{% if open_issues != 1 %}s{% endif %}</p>
+                {% else %}
+                <p class="text-[11px] font-bold text-slate-300 uppercase tracking-widest mb-6">No Active Incidents</p>
+                {% endif %}
+                <p class="text-slate-400 text-sm leading-relaxed font-medium mb-10 max-w-xs">
+                    Fleet incidents, maintenance delays, and rerouting operations tracked here.
+                </p>
+                <a href="{% url 'dispatcher:incidents' %}"
+                    class="w-full bg-slate-900 text-white font-bold h-14 rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-3 shadow-lg shadow-slate-900/15 group">
+                    Open Incident Hub
+                    <span
+                        class="material-symbols-outlined text-xl transition-transform group-hover:translate-x-1">notification_important</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

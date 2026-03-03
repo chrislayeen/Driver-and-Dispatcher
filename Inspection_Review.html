@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Approvals | BURGERS</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#0047FF',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            50: '#F8FAFC',
+                            100: '#F1F5F9',
+                            200: '#E2E8F0',
+                            300: '#CBD5E1',
+                            400: '#94A3B8',
+                            500: '#64748B',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1E293B',
+                            900: '#0F172A',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'Inter', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            :root {
+                --primary: #0047FF;
+                --surface: #FFFFFF;
+                --background: #F8FAFC;
+                --text-main: #0F172A;
+                --text-secondary: #64748B;
+                --border: #F1F5F9;
+            }
+            body { @apply bg-[var(--background)] text-[var(--text-main)] font-sans antialiased; }
+        }
+        .premium-card {
+            @apply bg-white border border-[var(--border)] rounded-2xl transition-all duration-300;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        }
+        .sidebar-item {
+            @apply flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 transition-all duration-300 ease-in-out;
+            background-color: transparent;
+        }
+        .sidebar-item:hover {
+            @apply text-primary-600 bg-primary-50/80 translate-x-1;
+        }
+        .sidebar-item-active {
+            @apply bg-primary-600 text-white shadow-md shadow-primary-600/20 translate-x-1;
+        }
+        .glass-nav {
+            @apply sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-[var(--border)];
+        }
+        .status-badge {
+            @apply px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border;
+        }
+    </style>
+</head>
+
+<body class="flex min-h-screen">
+    <!-- Unified Sidebar -->
+    <aside class="w-72 bg-white border-r border-[var(--border)] flex flex-col fixed inset-y-0 z-50">
+        <div class="px-8 py-10">
+            <div class="flex items-center gap-3 mb-10">
+                <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+                    class="h-8">
+                <span
+                    class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary-600 py-1 px-2 bg-primary-50 rounded">Admin</span>
+            </div>
+
+            <nav class="space-y-2">
+                <a class="sidebar-item" href="Dispatcher_Dashboard.html">
+                    <span class="material-symbols-outlined">grid_view</span>
+                    <span class="text-sm font-semibold tracking-wide">Dashboard</span>
+                </a>
+                <a class="sidebar-item sidebar-item-active" href="Inspection_Review.html">
+                    <span class="material-symbols-outlined">fact_check</span>
+                    <span class="text-sm font-semibold tracking-wide">Approvals</span>
+                </a>
+                <a class="sidebar-item" href="Issue_Review.html">
+                    <span class="material-symbols-outlined">emergency_home</span>
+                    <span class="text-sm font-semibold tracking-wide">Incidents</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="mt-auto px-8 py-8 border-t border-[var(--border)]">
+            <div class="flex items-center gap-4 mb-6">
+                <div
+                    class="w-12 h-12 rounded-full bg-slate-100 border-2 border-white shadow-sm flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-400 text-2xl">person</span>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-slate-900">Dispatcher</p>
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Admin User</p>
+                </div>
+            </div>
+            <a class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 transition-all font-bold text-sm"
+                href="Role.html">
+                <span class="material-symbols-outlined text-sm">logout</span>
+                Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-72 flex flex-col">
+        <!-- Header -->
+        <header class="h-20 glass-nav flex items-center justify-between px-10">
+            <div class="flex items-center gap-4">
+                <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <a class="hover:text-primary-600 transition-colors" href="Dispatcher_Dashboard.html">Dashboard</a>
+                    <span class="material-symbols-outlined text-sm">chevron_right</span>
+                    <span class="text-slate-900">Approvals</span>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button
+                    class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:text-primary-600 hover:bg-white transition-all">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="w-px h-6 bg-slate-200"></div>
+                <button
+                    class="h-10 px-4 flex items-center justify-center gap-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-400 text-xs font-bold uppercase tracking-wider opacity-50 cursor-not-allowed">
+                    <span class="material-symbols-outlined text-sm">history</span>
+                    Audit Log
+                </button>
+            </div>
+        </header>
+
+        <div class="p-10 max-w-7xl mx-auto w-full">
+            <div class="flex flex-col lg:flex-row gap-10">
+                <!-- Left: Empty Queue State -->
+                <div class="flex-1 space-y-10">
+
+                    <!-- Empty Unit Dossier -->
+                    <div class="premium-card p-10 relative overflow-hidden">
+                        <div class="flex items-center gap-6">
+                            <div
+                                class="w-28 h-20 rounded-2xl bg-slate-50 border-2 border-slate-100 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-200 text-4xl">local_shipping</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-4 mb-2">
+                                    <h1 class="text-3xl font-bold tracking-tighter text-slate-200">No Unit Selected</h1>
+                                    <span
+                                        class="status-badge bg-slate-50 text-slate-300 border-slate-100">Awaiting</span>
+                                </div>
+                                <p class="text-xs font-bold text-slate-300 uppercase tracking-widest">Select an approval
+                                    from the queue to begin review</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty Evidence Matrix -->
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Visual Evidence</h2>
+                            <p class="text-xs font-bold text-slate-300">0 CAPTURES</p>
+                        </div>
+
+                        <div class="premium-card p-16 flex flex-col items-center justify-center text-center">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-5">
+                                <span class="material-symbols-outlined text-slate-300 text-3xl">photo_library</span>
+                            </div>
+                            <p class="font-bold text-slate-400 text-sm">No evidence captures yet</p>
+                            <p class="text-[11px] text-slate-300 font-semibold mt-1 uppercase tracking-wider">Photos
+                                submitted by the driver will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Control Panel -->
+                <aside class="w-full lg:w-[420px] space-y-8">
+
+                    <!-- Empty Compliance Check -->
+                    <div class="premium-card overflow-hidden">
+                        <div
+                            class="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                            <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Compliance Check
+                            </h3>
+                            <span
+                                class="text-[10px] font-bold bg-slate-100 text-slate-400 px-3 py-1 rounded-lg">PENDING</span>
+                        </div>
+                        <div class="p-10 flex flex-col items-center justify-center text-center">
+                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center mb-4">
+                                <span class="material-symbols-outlined text-slate-300 text-2xl">checklist</span>
+                            </div>
+                            <p class="text-sm font-bold text-slate-400">No checklist loaded</p>
+                            <p class="text-[11px] text-slate-300 font-semibold mt-1 uppercase tracking-wider">Inspection
+                                points will appear on submission</p>
+                        </div>
+                    </div>
+
+                    <!-- Dispatcher Console -->
+                    <div class="premium-card p-10 space-y-8 bg-slate-100/50">
+                        <div>
+                            <label
+                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Dispatcher
+                                Observations</label>
+                            <textarea
+                                class="w-full h-32 bg-white border-2 border-slate-100 rounded-2xl p-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all placeholder:text-slate-300"
+                                placeholder="Add follow-up requirements or operational notes..."></textarea>
+                        </div>
+
+                        <div class="space-y-4">
+                            <button disabled
+                                class="w-full h-16 bg-slate-200 text-slate-400 font-bold rounded-2xl cursor-not-allowed flex items-center justify-center gap-3">
+                                <span class="material-symbols-outlined">verified</span>
+                                CONFIRM &amp; APPROVE
+                            </button>
+                            <div class="grid grid-cols-2 gap-4">
+                                <button disabled
+                                    class="h-14 border-2 border-slate-200 text-slate-300 font-bold text-xs uppercase tracking-widest rounded-2xl cursor-not-allowed">
+                                    Re-Inspect
+                                </button>
+                                <button disabled
+                                    class="h-14 border-2 border-slate-100 text-slate-300 font-bold text-xs uppercase tracking-widest rounded-2xl cursor-not-allowed">
+                                    Reject
+                                </button>
+                            </div>
+                        </div>
+
+                        <p
+                            class="text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest leading-loose">
+                            Actions will be available once<br />a unit is selected for review
+                        </p>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

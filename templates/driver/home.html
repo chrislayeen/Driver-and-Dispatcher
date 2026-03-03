@@ -1,0 +1,79 @@
+{% extends "base_driver.html" %}
+{% load static %}
+{% block title %}Driver Home | BURGERS{% endblock %}
+
+{% block header_right %}
+<div class="flex items-center gap-3">
+    <button
+        class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
+        <span class="material-symbols-outlined text-xl">notifications</span>
+    </button>
+    <a href="{% url 'role_select' %}"
+        class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+        <span class="material-symbols-outlined text-xl">logout</span>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<header class="px-6 pt-10 pb-6">
+    <h1 class="text-[32px] font-bold tracking-tight text-slate-900 dark:text-white leading-tight">Good Day, Driver</h1>
+    <p class="mt-2 text-slate-500 dark:text-slate-400 text-lg font-medium leading-normal">
+        {% if trip %}
+        You have an active trip in progress.
+        {% else %}
+        You have no active trips assigned at the moment.
+        {% endif %}
+    </p>
+</header>
+
+<div class="px-6 py-4">
+    <div
+        class="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-50 dark:border-slate-700 shadow-sm flex flex-col items-center text-center">
+        <div class="size-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-[#0047FF] text-4xl">local_shipping</span>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Ready for Dispatch</h3>
+        <p class="text-slate-500 dark:text-slate-400 text-base mt-2 px-4 leading-relaxed">
+            Complete your pre-trip check to signal availability.
+        </p>
+    </div>
+</div>
+
+<div class="px-6 mt-6">
+    {% if trip and trip.status == 'in_progress' %}
+    <a href="{% url 'driver:in_progress' %}"
+        class="w-full h-[64px] bg-emerald-600 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-colors active:scale-[0.98] duration-75">
+        <span class="material-symbols-outlined">directions_car</span>
+        Resume Trip In Progress
+    </a>
+    {% else %}
+    <a href="{% url 'driver:pre_inspection' %}"
+        class="w-full h-[64px] bg-[#0047FF] hover:bg-blue-700 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-colors active:scale-[0.98] duration-75">
+        <span class="material-symbols-outlined">fact_check</span>
+        Start Pre-Trip Check
+    </a>
+    {% endif %}
+</div>
+
+<div class="mt-8 px-6 flex flex-col gap-3">
+    <a class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-50 dark:border-slate-700 shadow-sm group"
+        href="#">
+        <div class="flex items-center gap-4 text-slate-700 dark:text-slate-200">
+            <span class="material-symbols-outlined text-slate-400">menu_book</span>
+            <span class="font-semibold">Driver Manual</span>
+        </div>
+        <span
+            class="material-symbols-outlined text-slate-300 text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+    </a>
+    <a class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-50 dark:border-slate-700 shadow-sm group"
+        href="#">
+        <div class="flex items-center gap-4 text-slate-700 dark:text-slate-200">
+            <span class="material-symbols-outlined text-slate-400">help_center</span>
+            <span class="font-semibold">Support &amp; FAQ</span>
+        </div>
+        <span
+            class="material-symbols-outlined text-slate-300 text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+    </a>
+</div>
+{% endblock %}
