@@ -5,12 +5,27 @@ from dispatcher.models import DispatcherNote
 
 
 def dispatcher_dashboard(request):
-    pending_count = Inspection.objects.filter(review_status='pending').count()
-    open_issues = Issue.objects.filter(status='open').count()
-    return render(request, 'dispatcher/dashboard.html', {
+    pending_inspections = Inspection.objects.filter(review_status='pending').order_by('-submitted_at')
+    pending_count = pending_inspections.count()
+    
+    open_issues = Issue.objects.filter(status='open').order_by('-submitted_at')
+    issue_count = open_issues.count()
+    
+    active_trips = Trip.objects.filter(status='in_progress').count()
+    
+    from django.utils import timezone
+    today = timezone.now().date()
+    completed_today = Trip.objects.filter(status='completed', started_at__date=today).count()
+    
+    context = {
         'pending_count': pending_count,
-        'open_issues': open_issues,
-    })
+        'open_issues': issue_count,
+        'active_trips': active_trips,
+        'completed_today': completed_today,
+        'recent_inspections': pending_inspections[:5],
+        'recent_issues': open_issues[:5],
+    }
+    return render(request, 'dispatcher/dashboard.html', context)
 
 
 def approvals(request):

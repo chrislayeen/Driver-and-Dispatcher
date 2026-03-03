@@ -43,7 +43,30 @@ def driver_home(request):
             trip = Trip.objects.get(id=trip_id)
         except Trip.DoesNotExist:
             trip = None
-    return render(request, 'driver/home.html', {'trip': trip})
+
+    # Dashboard Stats
+    from django.utils import timezone
+    today = timezone.now().date()
+    
+    completed_today = Trip.objects.filter(status='completed', started_at__date=today).count()
+    open_issues = Issue.objects.filter(status='open').count()
+    recent_notifications = Notification.objects.filter(is_read=False)[:3]
+    
+    # Dynamic Greeting
+    hour = timezone.now().hour
+    if hour < 12: greeting = "Good Morning"
+    elif hour < 17: greeting = "Good Afternoon"
+    else: greeting = "Good Evening"
+
+    context = {
+        'trip': trip,
+        'completed_today': completed_today,
+        'open_issues': open_issues,
+        'recent_notifications': recent_notifications,
+        'greeting': greeting,
+        'now': timezone.now(),
+    }
+    return render(request, 'driver/home.html', context)
 
 
 def pre_inspection(request):
