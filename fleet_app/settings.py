@@ -14,8 +14,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-burgers-5driver-fleet-app-secret-key-2026')
 
-# Security fallback (temporarily enabling for diagnosis)
-DEBUG = True
+# Security: DEBUG should be False in production
+DEBUG = False if os.environ.get('VERCEL') else env.get_value('DEBUG', default=True)
 
 ALLOWED_HOSTS = ['*']
 
