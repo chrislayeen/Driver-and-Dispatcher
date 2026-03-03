@@ -1,11 +1,20 @@
 from pathlib import Path
 import os
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-burgers-5driver-fleet-app-secret-key-2026'
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
 
-DEBUG = True
+# Reading .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+SECRET_KEY = env('SECRET_KEY', default='django-insecure-burgers-5driver-fleet-app-secret-key-2026')
+
+DEBUG = env.get_value('DEBUG', default=True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -16,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'storages',
     'driver',
     'dispatcher',
 ]
@@ -51,10 +61,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'fleet_app.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': env.db('DATABASE_URL', default='sqlite:///db.sqlite3')
+}
+
+# Supabase Storage Configuration (S3 Compatible)
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='fleet-assets')
+AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='ap-southeast-1')
+AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='')
+AWS_QUERYSTRING_AUTH = False  # Set to False to allow public links for public buckets
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }
 
 AUTH_PASSWORD_VALIDATORS = []
