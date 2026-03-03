@@ -63,6 +63,8 @@ WSGI_APPLICATION = 'fleet_app.wsgi.application'
 DATABASES = {
     'default': env.db('DATABASE_URL')
 }
+# Ensure Vercel uses SSL for Supabase
+DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 
 # DEBUG: Print DB info for Vercel logs
 db_conn = DATABASES['default']
