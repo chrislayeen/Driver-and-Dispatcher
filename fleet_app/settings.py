@@ -64,6 +64,13 @@ DATABASES = {
     'default': env.db('DATABASE_URL')
 }
 
+# DEBUG: Print DB info for Vercel logs
+db_conn = DATABASES['default']
+print(f"--- DB DEBUG ---")
+print(f"HOST: {db_conn.get('HOST')}")
+print(f"PORT: {db_conn.get('PORT')}")
+print(f"----------------")
+
 # Supabase Storage Configuration (S3 Compatible)
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
@@ -71,6 +78,10 @@ AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='fleet-assets')
 AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='ap-southeast-1')
 AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT_URL', default='')
 AWS_QUERYSTRING_AUTH = False  # Set to False to allow public links for public buckets
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_VERIFY = True
 
 STORAGES = {
     "default": {
