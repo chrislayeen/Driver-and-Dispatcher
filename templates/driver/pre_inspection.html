@@ -206,13 +206,20 @@
                     document.getElementById('approvalTitle').textContent = 'Approved!';
                     document.getElementById('approvalDesc').textContent = 'Your inspection was approved. Redirecting to active trip...';
 
-                    // Push Notification
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification("Inspection Approved", {
-                            body: "Your pre-trip inspection has been approved by dispatch. You are good to go!",
-                            icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" // fallback icon 
-                        });
+                    // Push Notification (Safe wrapper)
+                    try {
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification("Inspection Approved", {
+                                body: "Your pre-trip inspection has been approved by dispatch.",
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Notification error:", err);
                     }
+
+                    // Add a "Proceed" button as a backup in case redirect fails
+                    document.getElementById('approvalDesc').innerHTML += '<br><button onclick="window.location.href=\'{% url "driver:in_progress" %}\'" class="mt-4 px-6 py-2 bg-[#0047FF] text-white rounded-lg font-bold">Start Trip Now</button>';
 
                     // Redirect after 2s
                     setTimeout(() => {

@@ -25,6 +25,14 @@ def approve_inspection(request, pk):
         note_text = request.POST.get('note', '')
         inspection.review_status = action
         inspection.save()
+
+        # Robust Trip Promotion: Update trip status if this is a pre-inspection approval
+        if action == 'approved' and inspection.inspection_type == 'pre':
+            trip = inspection.trip
+            if trip:
+                trip.status = 'in_progress'
+                trip.save()
+
         DispatcherNote.objects.create(
             inspection_id=pk,
             note=note_text,
