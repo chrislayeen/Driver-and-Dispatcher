@@ -268,6 +268,7 @@
     // Client-side image compression
     function compressImage(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("Compression timeout after 10s")), 10000);
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = event => {
@@ -300,12 +301,13 @@
                             type: 'image/jpeg',
                             lastModified: Date.now()
                         });
+                        clearTimeout(timer);
                         resolve(newFile);
                     }, 'image/jpeg', quality);
                 };
-                img.onerror = error => reject(error);
+                img.onerror = error => { clearTimeout(timer); reject(error); };
             };
-            reader.onerror = error => reject(error);
+            reader.onerror = error => { clearTimeout(timer); reject(error); };
         });
     }
 
@@ -343,7 +345,8 @@
             console.error("Compression failed", error);
             loadingEl.classList.add('hidden');
             loadingEl.classList.remove('flex');
-            alert("Failed to process image.");
+            alert("Failed to process image. Please try again.");
+            clearZone(zone);
         }
     }
 
@@ -354,9 +357,14 @@
         }
     });
 
+    let isSubmitting = false;
+
     // AJAX form submission + Polling
     document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
+        isSubmitting = true;
 
         // Validate all 4 photos are uploaded
         const front = document.getElementById('upload-front').files.length;
@@ -366,6 +374,7 @@
 
         if (!front || !back || !left || !right) {
             alert('Please upload all four sides of the truck (Front, Back, Left, Right) before submitting.');
+            isSubmitting = false;
             return;
         }
 
@@ -375,59 +384,70 @@
         submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
 
         const data = new FormData(form);
-        const resp = await fetch(form.action, { method: 'POST', body: data });
-        const json = await resp.json();
+        try {
+            const resp = await fetch(form.action, { method: 'POST', body: data });
+            if (!resp.ok) throw new Error("Server returned API Exception.");
+            const json = await resp.json();
 
-        if (json.success) {
-            // Show premium wait overlay
-            const overlay = document.getElementById('approvalOverlay');
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
+            if (json.success) {
+                // Show premium wait overlay
+                const overlay = document.getElementById('approvalOverlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
 
-            const pk = json.inspection_pk;
+                const pk = json.inspection_pk;
 
-            // Poll every 3 seconds
-            const poll = setInterval(async () => {
-                const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
-                const statusJson = await statusResp.json();
+                // Poll every 3 seconds
+                const poll = setInterval(async () => {
+                    const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
+                    const statusJson = await statusResp.json();
 
-                if (statusJson.review_status === 'approved') {
-                    clearInterval(poll);
+                    if (statusJson.review_status === 'approved') {
+                        clearInterval(poll);
 
-                    // Show success state
-                    document.getElementById('approvalLoader').classList.add('hidden');
-                    document.getElementById('approvalSuccess').classList.remove('hidden');
-                    document.getElementById('approvalSuccess').classList.add('flex');
-                    document.getElementById('approvalTitle').textContent = 'Approved!';
-                    document.getElementById('approvalDesc').textContent = 'Your inspection was approved. Redirecting to active trip...';
+                        // Show success state
+                        document.getElementById('approvalLoader').classList.add('hidden');
+                        document.getElementById('approvalSuccess').classList.remove('hidden');
+                        document.getElementById('approvalSuccess').classList.add('flex');
+                        document.getElementById('approvalTitle').textContent = 'Approved!';
+                        document.getElementById('approvalDesc').textContent = 'Your inspection was approved. Redirecting to active trip...';
 
-                    // Push Notification (Safe wrapper)
-                    try {
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification("Inspection Approved", {
-                                body: "Your pre-trip inspection has been approved by dispatch.",
-                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
-                            });
+                        // Push Notification (Safe wrapper)
+                        try {
+                            if ("Notification" in window && Notification.permission === "granted") {
+                                new Notification("Inspection Approved", {
+                                    body: "Your pre-trip inspection has been approved by dispatch.",
+                                    icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Notification error:", err);
                         }
-                    } catch (err) {
-                        console.error("Notification error:", err);
+
+
+                        // Redirect after 2s
+                        setTimeout(() => {
+                            window.location.href = "{% url 'driver:in_progress' %}";
+                        }, 2000);
+
+                    } else if (statusJson.review_status === 'rejected') {
+                        clearInterval(poll);
+                        alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
+                        window.location.reload();
                     }
-
-
-                    // Redirect after 2s
-                    setTimeout(() => {
-                        window.location.href = "{% url 'driver:in_progress' %}";
-                    }, 2000);
-
-                } else if (statusJson.review_status === 'rejected') {
-                    clearInterval(poll);
-                    alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
-                    window.location.reload();
-                }
-            }, 3000);
-        } else {
-            alert("Error submitting inspection: " + JSON.stringify(json.errors));
+                }, 3000);
+            } else {
+                alert("Error submitting inspection: " + JSON.stringify(json.errors));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+                isSubmitting = false;
+            }
+        } catch (err) {
+            console.error(err);
+            alert("A network error occurred or the payload is too large. Please try again.");
             submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+            isSubmitting = false;
         }
     });
 </script>

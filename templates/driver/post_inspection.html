@@ -268,6 +268,7 @@
     // --- Auto Compress Function ---
     function compressImage(file, maxWidth, maxHeight, quality) {
         return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("Compression timeout after 10s")), 10000);
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = event => {
@@ -300,12 +301,13 @@
                             type: 'image/jpeg',
                             lastModified: Date.now()
                         });
+                        clearTimeout(timer);
                         resolve(newFile);
                     }, 'image/jpeg', quality);
                 };
-                img.onerror = error => reject(error);
+                img.onerror = error => { clearTimeout(timer); reject(error); };
             };
-            reader.onerror = error => reject(error);
+            reader.onerror = error => { clearTimeout(timer); reject(error); };
         });
     }
 
@@ -342,7 +344,8 @@
             console.error("Compression failed", error);
             loadingEl.classList.add('hidden');
             loadingEl.classList.remove('flex');
-            alert("Failed to process image.");
+            alert("Failed to process image. Please try again.");
+            clearZone(zone);
         }
     }
 
@@ -353,9 +356,14 @@
         }
     });
 
+    let isSubmitting = false;
+
     // AJAX form submission + Polling
     document.getElementById('postInspectionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        if (isSubmitting) return;
+        isSubmitting = true;
 
         // Validate all 4 photos are uploaded
         const front = document.getElementById('upload-front').files.length;
@@ -365,6 +373,7 @@
 
         if (!front || !back || !left || !right) {
             alert('Please upload all four sides of the truck (Front, Back, Left, Right) before submitting.');
+            isSubmitting = false;
             return;
         }
 
@@ -376,7 +385,7 @@
         const data = new FormData(form);
         try {
             const resp = await fetch(form.action, { method: 'POST', body: data });
-            if (!resp.ok) throw new Error("Server returned " + resp.status);
+            if (!resp.ok) throw new Error("Server returned API Exception.");
             const json = await resp.json();
 
             if (json.success) {
@@ -434,12 +443,14 @@
                 alert("Error submitting inspection: " + JSON.stringify(json.errors));
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<span>Complete Trip</span><span class="material-symbols-outlined text-xl">check_circle</span>';
+                isSubmitting = false;
             }
         } catch (err) {
             console.error(err);
             alert("A network error occurred or the payload is too large. Please try again.");
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<span>Complete Trip</span><span class="material-symbols-outlined text-xl">check_circle</span>';
+            isSubmitting = false;
         }
     });
 </script>

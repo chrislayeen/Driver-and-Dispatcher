@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from django.db import models
+from django.db import models, transaction
 
 from .models import Trip, Inspection, InspectionPhoto, Issue, IssuePhoto, Notification
 from .forms import PreInspectionForm, PostInspectionForm, IssueForm
@@ -73,23 +73,25 @@ def pre_inspection(request):
     if request.method == 'POST':
         form = PreInspectionForm(request.POST)
         if form.is_valid():
-            trip_id = request.session.get('trip_id')
-            if not trip_id:
-                trip = Trip.objects.create(driver_name='Driver', status='pending')
-                request.session['trip_id'] = trip.id
-            else:
-                trip = get_object_or_404(Trip, id=trip_id)
+            with transaction.atomic():
+                trip_id = request.session.get('trip_id')
+                if not trip_id:
+                    trip = Trip.objects.create(driver_name='Driver', status='pending')
+                    request.session['trip_id'] = trip.id
+                else:
+                    trip = get_object_or_404(Trip, id=trip_id)
 
-            inspection = form.save(commit=False)
-            inspection.trip = trip
-            inspection.inspection_type = 'pre'
-            inspection.save()
+                inspection = form.save(commit=False)
+                inspection.trip = trip
+                inspection.inspection_type = 'pre'
+                inspection.save()
 
-            for f in request.FILES.getlist('photos'):
-                InspectionPhoto.objects.create(inspection=inspection, image=f)
+                photos = request.FILES.getlist('photos')[:4]
+                for f in photos:
+                    InspectionPhoto.objects.create(inspection=inspection, image=f)
 
-            # Store inspection ID in session so we can poll it
-            request.session['pending_inspection_id'] = inspection.id
+                # Store inspection ID in session so we can poll it
+                request.session['pending_inspection_id'] = inspection.id
 
             # Return JSON — the AJAX handler on the page will show the waiting overlay
             return JsonResponse({'success': True, 'inspection_pk': inspection.id})
@@ -131,24 +133,26 @@ def post_inspection(request):
     if request.method == 'POST':
         form = PostInspectionForm(request.POST)
         if form.is_valid():
-            trip_id = request.session.get('trip_id')
-            trip = None
-            if trip_id:
-                try:
-                    trip = Trip.objects.get(id=trip_id)
-                except Trip.DoesNotExist:
-                    pass
+            with transaction.atomic():
+                trip_id = request.session.get('trip_id')
+                trip = None
+                if trip_id:
+                    try:
+                        trip = Trip.objects.get(id=trip_id)
+                    except Trip.DoesNotExist:
+                        pass
 
-            inspection = form.save(commit=False)
-            inspection.trip = trip
-            inspection.inspection_type = 'post'
-            inspection.save()
+                inspection = form.save(commit=False)
+                inspection.trip = trip
+                inspection.inspection_type = 'post'
+                inspection.save()
 
-            for f in request.FILES.getlist('photos'):
-                InspectionPhoto.objects.create(inspection=inspection, image=f)
+                photos = request.FILES.getlist('photos')[:4]
+                for f in photos:
+                    InspectionPhoto.objects.create(inspection=inspection, image=f)
 
-            # Store post-inspection ID for polling
-            request.session['pending_post_inspection_id'] = inspection.id
+                # Store post-inspection ID for polling
+                request.session['pending_post_inspection_id'] = inspection.id
 
             return JsonResponse({'success': True, 'inspection_pk': inspection.id})
         return JsonResponse({'success': False, 'errors': form.errors}, status=400)
