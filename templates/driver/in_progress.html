@@ -98,23 +98,30 @@
 
     <!-- Action Buttons -->
     <div class="space-y-3 pt-2">
+        <!-- Primary CTA -->
         <a href="#" id="openMapsBtn" target="_blank"
             class="w-full flex items-center justify-center gap-3 py-4 bg-[#1a73e8] hover:bg-[#1a73e8]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#1a73e8]/30 active:scale-[0.98] transition-all opacity-50 cursor-not-allowed">
             <span class="material-symbols-outlined">map</span>
             Open Route in Maps
         </a>
-        <button id="reportIssueBtn"
-            class="w-full flex items-center justify-center gap-3 py-4 bg-white dark:bg-slate-900 border-2 border-red-500/50 text-red-600 dark:text-red-400 rounded-xl font-bold text-lg shadow-sm active:scale-95 transition-all">
-            <span class="material-symbols-outlined">report_problem</span>
-            Report Issue
-        </button>
-        <button id="viewStatusBtn"
-            class="w-full flex items-center justify-center gap-3 py-4 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold bg-white dark:bg-slate-900 active:scale-95 transition-all">
-            <span class="material-symbols-outlined">assignment</span>
-            View Trailer Status
-        </button>
+
+        <!-- Compact Utility Icon Row -->
+        <div class="grid grid-cols-2 gap-3">
+            <button id="reportIssueBtn"
+                class="flex flex-col items-center justify-center gap-1.5 py-3 bg-white dark:bg-slate-900 border border-red-400/40 text-red-500 dark:text-red-400 rounded-xl font-semibold text-xs uppercase tracking-wider shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-xl">report_problem</span>
+                Report Issue
+            </button>
+            <button id="viewStatusBtn"
+                class="flex flex-col items-center justify-center gap-1.5 py-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 rounded-xl font-semibold text-xs uppercase tracking-wider shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-xl">assignment</span>
+                Trailer Status
+            </button>
+        </div>
+
+        <!-- End-of-trip action -->
         <a href="{% url 'driver:post_inspection' %}"
-            class="w-full flex items-center justify-center gap-3 py-4 bg-[#0047FF] hover:bg-[#0047FF]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#0047FF]/30 active:scale-[0.98] transition-colors duration-75 mt-4">
+            class="w-full flex items-center justify-center gap-3 py-4 bg-[#0047FF] hover:bg-[#0047FF]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#0047FF]/30 active:scale-[0.98] transition-colors duration-75">
             <span class="material-symbols-outlined">where_to_vote</span>
             Arrive and Inspect
         </a>
