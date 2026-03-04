@@ -318,51 +318,68 @@
         const destination = "Chicago, IL"; // Simulated dynamic backend variable string
 
         if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
+            let retryCount = 0;
+            const geoOptions = { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 };
 
-                    // Update Google Maps Link with origin + destination
-                    if (mapsBtn) {
-                        mapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lon}&destination=${encodeURIComponent(destination)}`;
-                        mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            const successCb = async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                // Update Google Maps Link with origin + destination
+                if (mapsBtn) {
+                    mapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lon}&destination=${encodeURIComponent(destination)}`;
+                    mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                try {
+                    // Reverse Geocode to get readable City, State
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+                    if (!resp.ok) throw new Error("Reverse geocode HTTP error");
+                    const data = await resp.json();
+
+                    let locationName = "GPS ACTIVE";
+                    if (data && data.address) {
+                        const city = data.address.city || data.address.town || data.address.village || data.address.county;
+                        const state = data.address.state;
+                        if (city && state) locationName = `${city}, ${state}`;
+                        else if (city) locationName = city;
                     }
 
-                    try {
-                        // Reverse Geocode to get readable City, State
-                        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
-                        const data = await resp.json();
+                    locText.innerText = locationName.toUpperCase();
+                    locText.className = "text-[8px] font-black text-white tracking-widest text-center";
+                } catch (e) {
+                    console.error("Geocoding failed", e);
+                    locText.innerText = 'GPS ACTIVE';
+                    locText.className = "text-[9px] font-black text-white tracking-widest text-center";
+                }
+            };
 
-                        let locationName = "Unknown Area";
-                        if (data && data.address) {
-                            const city = data.address.city || data.address.town || data.address.village || data.address.county;
-                            const state = data.address.state;
-                            if (city && state) locationName = `${city}, ${state}`;
-                            else if (city) locationName = city;
-                        }
+            const errorCb = (error) => {
+                console.warn("Location error:", error.message);
+                retryCount++;
 
-                        locText.innerText = locationName.toUpperCase();
-                        locText.classList.replace('text-[9px]', 'text-[8px]'); // slightly smaller to fit longer strings
-                    } catch (e) {
-                        console.error("Geocoding failed", e);
-                        locText.innerText = 'GPS ACTIVE';
-                    }
-                },
-                (error) => {
-                    console.warn("Location error:", error);
-                    locText.innerText = 'NO GPS';
-                    locText.className = "text-[9px] font-black text-red-200 tracking-widest text-center";
-                    if (mapsBtn) {
-                        // Fallback purely to destination if origin blocked
-                        mapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
-                        mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                    }
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
+                // If it fails on first try (timeout/accuracy issue), retry once with lower accuracy
+                if (retryCount === 1 && error.code === 3) {
+                    navigator.geolocation.getCurrentPosition(successCb, errorCb, { enableHighAccuracy: false, timeout: 20000, maximumAge: Infinity });
+                    return;
+                }
+
+                // Hard fallback
+                locText.innerText = 'DEV LOC';
+                locText.className = "text-[9px] font-black text-amber-300 tracking-widest text-center";
+
+                if (mapsBtn) {
+                    mapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+                    mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            };
+
+            // Start tracking
+            navigator.geolocation.getCurrentPosition(successCb, errorCb, geoOptions);
+
         } else {
             locText.innerText = 'GPS N/A';
+            locText.className = "text-[9px] font-black text-red-300 tracking-widest text-center";
         }
 
         // ── Report Issue Modal ──
