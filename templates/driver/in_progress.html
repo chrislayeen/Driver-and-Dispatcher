@@ -20,37 +20,114 @@
 
 {% block content %}
 <main class="flex-1 p-4 space-y-4 pb-24">
-    <!-- Status Card -->
-    <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex flex-col">
-                <span class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Current Trip Status</span>
-                <div class="flex items-center gap-2 mt-1">
-                    <span class="flex h-3 w-3 rounded-full bg-emerald-500"></span>
-                    <p class="text-slate-900 dark:text-slate-100 text-2xl font-bold tracking-tight">In Progress</p>
+    <!-- Active Navigation Dashboard -->
+    <div
+        class="relative overflow-hidden bg-slate-900 rounded-2xl border border-slate-800 shadow-2xl shadow-[#0047FF]/10">
+        <!-- Dashboard Header -->
+        <div class="relative z-10 p-5 border-b border-slate-800/80 bg-gradient-to-b from-slate-800/50 to-transparent">
+            <div class="flex items-start justify-between">
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex h-2.5 w-2.5">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </div>
+                        <span class="text-[10px] font-black tracking-widest text-emerald-400 uppercase">Live
+                            Routing</span>
+                    </div>
+                    <h2 class="text-white text-2xl font-black tracking-tight leading-tight mt-1">Chicago, IL<br /><span
+                            class="text-slate-400 text-lg font-semibold">Midwest Distribution Hub</span></h2>
+                </div>
+                <div class="bg-slate-800/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/50">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Status</p>
+                    <p class="text-[#0047FF] font-black text-sm">EN ROUTE</p>
                 </div>
             </div>
-            <div
-                class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1 rounded-full text-sm font-bold">
-                ACTIVE</div>
         </div>
-        <!-- Map Placeholder -->
+
+        <!-- Simulated Map / Route Visual -->
         <div
-            class="relative w-full h-48 rounded-lg overflow-hidden mb-4 bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center">
-            <div class="flex flex-col items-center gap-2 text-slate-400">
-                <span class="material-symbols-outlined text-4xl">map</span>
-                <p class="text-xs font-semibold uppercase tracking-wider">GPS Location Tracking</p>
+            class="relative w-full h-40 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-950/80 overflow-hidden flex items-center justify-between px-8 border-b border-slate-800">
+            <!-- Starting Pt -->
+            <div class="flex flex-col items-center gap-2 relative z-10 mt-6">
+                <div class="w-4 h-4 rounded-full bg-slate-600 border-2 border-slate-400 shadow-md"></div>
+                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest absolute top-6 w-max">Origin</p>
+            </div>
+
+            <!-- Dashed Route Line -->
+            <div
+                class="absolute inset-x-12 h-[2px] border-t-2 border-dashed border-slate-700 top-1/2 -translate-y-1/2 z-0">
+            </div>
+
+            <!-- Live Tracker Dot (Simulated driving) -->
+            <div class="absolute top-1/2 -translate-y-1/2 left-[55%] z-10 flex flex-col items-center">
+                <div class="relative flex h-6 w-6 items-center justify-center">
+                    <span
+                        class="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-[#0047FF] opacity-30"></span>
+                    <div class="bg-white p-1 rounded-full shadow-lg shadow-[#0047FF]/50 border-2 border-[#0047FF]">
+                        <span
+                            class="material-symbols-outlined text-[12px] text-[#0047FF] animate-pulse">local_shipping</span>
+                    </div>
+                </div>
+                <div
+                    class="mt-2 bg-[#0047FF] px-2 py-0.5 rounded-full shadow-md backdrop-blur-sm border border-white/20">
+                    <p class="text-[9px] font-black text-white tracking-widest">YOU</p>
+                </div>
+            </div>
+
+            <!-- Destination Pt -->
+            <div class="flex flex-col items-center gap-2 relative z-10 mt-6">
+                <span
+                    class="material-symbols-outlined text-red-500 text-3xl drop-shadow-[0_2px_4px_rgba(239,68,68,0.4)]">location_on</span>
+                <p class="text-[9px] font-bold text-red-400 uppercase tracking-widest absolute top-[30px] w-max">Dst</p>
             </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
-                <p class="text-[10px] text-slate-500 font-bold uppercase">Estimated Arrival</p>
-                <p class="text-slate-900 dark:text-slate-100 font-bold">—</p>
+
+        <!-- Critical Driving Metrics -->
+        <div class="grid grid-cols-2 gap-[1px] bg-slate-800">
+            <div class="bg-slate-900 p-4 flex flex-col items-start">
+                <div class="flex items-center gap-1.5 opacity-60 mb-1">
+                    <span class="material-symbols-outlined text-[14px] text-white">speed</span>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Avg Speed</p>
+                </div>
+                <p class="text-white font-black tracking-tight text-xl">62 <span
+                        class="text-xs text-slate-500 font-bold ml-0.5">mph</span></p>
             </div>
-            <div class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
-                <p class="text-[10px] text-slate-500 font-bold uppercase">Distance Left</p>
-                <p class="text-slate-900 dark:text-slate-100 font-bold">—</p>
+            <div class="bg-slate-900 p-4 flex flex-col items-start">
+                <div class="flex items-center gap-1.5 opacity-60 mb-1">
+                    <span class="material-symbols-outlined text-[14px] text-white">schedule</span>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Curr. ETA</p>
+                </div>
+                <p class="text-white font-black tracking-tight text-xl">14:30 <span
+                        class="text-xs text-slate-500 font-bold ml-0.5">PM</span></p>
             </div>
+            <div class="bg-slate-900 p-4 flex flex-col items-start">
+                <div class="flex items-center gap-1.5 opacity-60 mb-1">
+                    <span class="material-symbols-outlined text-[14px] text-white">route</span>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Left to Dest</p>
+                </div>
+                <p class="text-white font-black tracking-tight text-xl">142 <span
+                        class="text-xs text-slate-500 font-bold ml-0.5">mi</span></p>
+            </div>
+            <div class="bg-slate-900 p-4 flex flex-col items-start">
+                <div class="flex items-center gap-1.5 opacity-60 mb-1">
+                    <span class="material-symbols-outlined text-[14px] text-white">local_cafe</span>
+                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Next Stop</p>
+                </div>
+                <p class="text-emerald-400 font-black tracking-tight text-xl">45 <span
+                        class="text-xs text-emerald-700 font-bold ml-0.5">mi</span></p>
+            </div>
+        </div>
+
+        <!-- Active Dispatch Note -->
+        <div class="bg-[#0047FF]/10 border-t border-[#0047FF]/20 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px] text-[#0047FF]">campaign</span>
+                <p class="text-xs font-semibold text-slate-300">Moderate traffic reported on I-94 EB.</p>
+            </div>
+            <span
+                class="text-[9px] font-bold text-[#0047FF] uppercase tracking-widest bg-[#0047FF]/10 px-2 py-1 rounded">Update</span>
         </div>
     </div>
 
