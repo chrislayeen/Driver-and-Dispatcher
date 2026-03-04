@@ -37,29 +37,23 @@
             <!-- Front -->
             <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
                 onclick="triggerUpload('front')">
-                <input type="file" id="upload-front" name="photos" accept="image/*" class="hidden"
-                    onchange="handleZoneUpload(this, 'front', 'Front')">
+                <input type="file" id="upload-front" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'front')">
                 <div class="zone-content flex flex-col items-center justify-center gap-2 pointer-events-none">
                     <span class="material-symbols-outlined text-3xl">directions_car</span>
                     <span
                         class="font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Front</span>
                 </div>
-                <!-- Loading State -->
+                <!-- Processing Loader -->
                 <div
                     class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
                     <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
-                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">AI Scanning</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
                 </div>
                 <!-- Success Preview -->
                 <div class="zone-preview hidden absolute inset-0 z-20">
                     <img src="" class="w-full h-full object-cover"
                         onclick="event.stopPropagation(); window.openLightbox(this.src)">
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                        <div class="flex items-center gap-1 text-emerald-400">
-                            <span class="material-symbols-outlined text-[10px]">verified_user</span>
-                            <span class="font-bold text-[8px] uppercase tracking-wider">AI: Front</span>
-                        </div>
-                    </div>
                     <button type="button" onclick="event.stopPropagation(); clearZone('front')"
                         class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-md">
                         <span class="material-symbols-outlined text-[10px]">close</span>
@@ -70,29 +64,23 @@
             <!-- Back -->
             <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
                 onclick="triggerUpload('back')">
-                <input type="file" id="upload-back" name="photos" accept="image/*" class="hidden"
-                    onchange="handleZoneUpload(this, 'back', 'Back')">
+                <input type="file" id="upload-back" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'back')">
                 <div class="zone-content flex flex-col items-center justify-center gap-2 pointer-events-none">
                     <span class="material-symbols-outlined text-3xl">airport_shuttle</span>
                     <span
                         class="font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Back</span>
                 </div>
-                <!-- Loading State -->
+                <!-- Processing Loader -->
                 <div
                     class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
                     <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
-                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">AI Scanning</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
                 </div>
                 <!-- Success Preview -->
                 <div class="zone-preview hidden absolute inset-0 z-20">
                     <img src="" class="w-full h-full object-cover"
                         onclick="event.stopPropagation(); window.openLightbox(this.src)">
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                        <div class="flex items-center gap-1 text-emerald-400">
-                            <span class="material-symbols-outlined text-[10px]">verified_user</span>
-                            <span class="font-bold text-[8px] uppercase tracking-wider">AI: Back</span>
-                        </div>
-                    </div>
                     <button type="button" onclick="event.stopPropagation(); clearZone('back')"
                         class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-md">
                         <span class="material-symbols-outlined text-[10px]">close</span>
@@ -103,29 +91,23 @@
             <!-- Left -->
             <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
                 onclick="triggerUpload('left')">
-                <input type="file" id="upload-left" name="photos" accept="image/*" class="hidden"
-                    onchange="handleZoneUpload(this, 'left', 'Left')">
+                <input type="file" id="upload-left" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'left')">
                 <div class="zone-content flex flex-col items-center justify-center gap-2 pointer-events-none">
                     <span class="material-symbols-outlined text-3xl">flip_to_back</span>
                     <span class="font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Left
                         Side</span>
                 </div>
-                <!-- Loading State -->
+                <!-- Processing Loader -->
                 <div
                     class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
                     <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
-                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">AI Scanning</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
                 </div>
                 <!-- Success Preview -->
                 <div class="zone-preview hidden absolute inset-0 z-20">
                     <img src="" class="w-full h-full object-cover"
                         onclick="event.stopPropagation(); window.openLightbox(this.src)">
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                        <div class="flex items-center gap-1 text-emerald-400">
-                            <span class="material-symbols-outlined text-[10px]">verified_user</span>
-                            <span class="font-bold text-[8px] uppercase tracking-wider">AI: Left</span>
-                        </div>
-                    </div>
                     <button type="button" onclick="event.stopPropagation(); clearZone('left')"
                         class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-md">
                         <span class="material-symbols-outlined text-[10px]">close</span>
@@ -136,29 +118,23 @@
             <!-- Right -->
             <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
                 onclick="triggerUpload('right')">
-                <input type="file" id="upload-right" name="photos" accept="image/*" class="hidden"
-                    onchange="handleZoneUpload(this, 'right', 'Right')">
+                <input type="file" id="upload-right" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'right')">
                 <div class="zone-content flex flex-col items-center justify-center gap-2 pointer-events-none">
                     <span class="material-symbols-outlined text-3xl">flip_to_front</span>
                     <span class="font-bold text-xs uppercase tracking-widest text-slate-500 dark:text-slate-400">Right
                         Side</span>
                 </div>
-                <!-- Loading State -->
+                <!-- Processing Loader -->
                 <div
                     class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
                     <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
-                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">AI Scanning</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
                 </div>
                 <!-- Success Preview -->
                 <div class="zone-preview hidden absolute inset-0 z-20">
                     <img src="" class="w-full h-full object-cover"
                         onclick="event.stopPropagation(); window.openLightbox(this.src)">
-                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                        <div class="flex items-center gap-1 text-emerald-400">
-                            <span class="material-symbols-outlined text-[10px]">verified_user</span>
-                            <span class="font-bold text-[8px] uppercase tracking-wider">AI: Right</span>
-                        </div>
-                    </div>
                     <button type="button" onclick="event.stopPropagation(); clearZone('right')"
                         class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 shadow-md">
                         <span class="material-symbols-outlined text-[10px]">close</span>
