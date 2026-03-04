@@ -30,58 +30,22 @@
                     <div class="flex items-center gap-2">
                         <div class="relative flex h-2.5 w-2.5">
                             <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0047FF] opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#0047FF]"></span>
                         </div>
-                        <span class="text-[10px] font-black tracking-widest text-emerald-400 uppercase">Live
-                            Routing</span>
+                        <span class="text-[10px] font-black tracking-widest text-[#0047FF] uppercase">Current
+                            Location</span>
                     </div>
-                    <h2 class="text-white text-2xl font-black tracking-tight leading-tight mt-1">Chicago, IL<br /><span
-                            class="text-slate-400 text-lg font-semibold">Midwest Distribution Hub</span></h2>
-                </div>
-                <div class="bg-slate-800/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/50">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Status</p>
-                    <p class="text-[#0047FF] font-black text-sm">EN ROUTE</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Simulated Map / Route Visual -->
-        <div
-            class="relative w-full h-40 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-950/80 overflow-hidden flex items-center justify-between px-8 border-b border-slate-800">
-            <!-- Starting Pt -->
-            <div class="flex flex-col items-center gap-2 relative z-10 mt-6">
-                <div class="w-4 h-4 rounded-full bg-slate-600 border-2 border-slate-400 shadow-md"></div>
-                <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest absolute top-6 w-max">Origin</p>
-            </div>
-
-            <!-- Dashed Route Line -->
-            <div
-                class="absolute inset-x-12 h-[2px] border-t-2 border-dashed border-slate-700 top-1/2 -translate-y-1/2 z-0">
-            </div>
-
-            <!-- Live Tracker Dot (Simulated driving) -->
-            <div class="absolute top-1/2 -translate-y-1/2 left-[55%] z-10 flex flex-col items-center">
-                <div class="relative flex h-6 w-6 items-center justify-center">
-                    <span
-                        class="animate-ping absolute inline-flex h-10 w-10 rounded-full bg-[#0047FF] opacity-30"></span>
-                    <div class="bg-white p-1 rounded-full shadow-lg shadow-[#0047FF]/50 border-2 border-[#0047FF]">
-                        <span
-                            class="material-symbols-outlined text-[12px] text-[#0047FF] animate-pulse">local_shipping</span>
+                    <div class="mt-1">
+                        <h2 id="liveLocationText" class="text-white text-xl font-black tracking-tight leading-tight">
+                            LOCATING...</h2>
                     </div>
                 </div>
                 <div
-                    class="mt-2 bg-[#0047FF] px-2 py-0.5 rounded-full shadow-md backdrop-blur-sm border border-white/20">
-                    <p id="liveLocationText" class="text-[9px] font-black text-white tracking-widest text-center">
-                        LOCATING...</p>
+                    class="bg-slate-800/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/50 text-right">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Destination</p>
+                    <p class="text-emerald-400 font-black text-sm">KOCHI</p>
                 </div>
-            </div>
-
-            <!-- Destination Pt -->
-            <div class="flex flex-col items-center gap-2 relative z-10 mt-6">
-                <span
-                    class="material-symbols-outlined text-red-500 text-3xl drop-shadow-[0_2px_4px_rgba(239,68,68,0.4)]">location_on</span>
-                <p class="text-[9px] font-bold text-red-400 uppercase tracking-widest absolute top-[30px] w-max">Dst</p>
             </div>
         </div>
 
@@ -363,11 +327,9 @@
                     }
 
                     locText.innerText = locationName.toUpperCase();
-                    locText.className = "text-[8px] font-black text-white tracking-widest text-center";
                 } catch (e) {
                     console.error("Geocoding failed", e);
                     locText.innerText = 'GPS ACTIVE';
-                    locText.className = "text-[9px] font-black text-white tracking-widest text-center";
                 }
             };
 
@@ -383,7 +345,6 @@
 
                 // Hard fallback
                 locText.innerText = 'DEV LOC';
-                locText.className = "text-[9px] font-black text-amber-300 tracking-widest text-center";
 
                 if (mapsBtn) {
                     mapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
@@ -396,7 +357,6 @@
 
         } else {
             locText.innerText = 'GPS N/A';
-            locText.className = "text-[9px] font-black text-red-300 tracking-widest text-center";
         }
 
         // ── Report Issue Modal ──
