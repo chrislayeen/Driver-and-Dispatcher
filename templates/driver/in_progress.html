@@ -134,6 +134,11 @@
 
     <!-- Action Buttons -->
     <div class="space-y-3 pt-2">
+        <a href="#" id="openMapsBtn" target="_blank"
+            class="w-full flex items-center justify-center gap-3 py-4 bg-[#1a73e8] hover:bg-[#1a73e8]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#1a73e8]/30 active:scale-[0.98] transition-all opacity-50 cursor-not-allowed">
+            <span class="material-symbols-outlined">map</span>
+            Open Route in Maps
+        </a>
         <button id="reportIssueBtn"
             class="w-full flex items-center justify-center gap-3 py-4 bg-white dark:bg-slate-900 border-2 border-red-500/50 text-red-600 dark:text-red-400 rounded-xl font-bold text-lg shadow-sm active:scale-95 transition-all">
             <span class="material-symbols-outlined">report_problem</span>
@@ -307,19 +312,52 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
-        // ── Geolocation Request ──
+        // ── Geolocation & Routing Request ──
         const locText = document.getElementById('liveLocationText');
+        const mapsBtn = document.getElementById('openMapsBtn');
+        const destination = "Chicago, IL"; // Simulated dynamic backend variable string
+
         if ("geolocation" in navigator) {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude.toFixed(4);
-                    const lon = position.coords.longitude.toFixed(4);
-                    locText.innerText = `${lat}, ${lon}`;
+                async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Update Google Maps Link with origin + destination
+                    if (mapsBtn) {
+                        mapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lon}&destination=${encodeURIComponent(destination)}`;
+                        mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+
+                    try {
+                        // Reverse Geocode to get readable City, State
+                        const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+                        const data = await resp.json();
+
+                        let locationName = "Unknown Area";
+                        if (data && data.address) {
+                            const city = data.address.city || data.address.town || data.address.village || data.address.county;
+                            const state = data.address.state;
+                            if (city && state) locationName = `${city}, ${state}`;
+                            else if (city) locationName = city;
+                        }
+
+                        locText.innerText = locationName.toUpperCase();
+                        locText.classList.replace('text-[9px]', 'text-[8px]'); // slightly smaller to fit longer strings
+                    } catch (e) {
+                        console.error("Geocoding failed", e);
+                        locText.innerText = 'GPS ACTIVE';
+                    }
                 },
                 (error) => {
                     console.warn("Location error:", error);
                     locText.innerText = 'NO GPS';
                     locText.className = "text-[9px] font-black text-red-200 tracking-widest text-center";
+                    if (mapsBtn) {
+                        // Fallback purely to destination if origin blocked
+                        mapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+                        mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
                 },
                 { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
             );
