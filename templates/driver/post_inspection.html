@@ -265,30 +265,85 @@
         previewEl.querySelector('img').src = '';
     }
 
-    function handleZoneUpload(input, zone, sideName) {
+    // --- Auto Compress Function ---
+    function compressImage(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height *= maxWidth / width));
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width *= maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(blob => {
+                        const newFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        resolve(newFile);
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = error => reject(error);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    async function handleZoneUpload(input, zone) {
         if (!input.files || input.files.length === 0) return;
 
         const file = input.files[0];
-        const url = URL.createObjectURL(file);
         const wrapper = input.parentElement;
 
         const loadingEl = wrapper.querySelector('.zone-loading');
         const previewEl = wrapper.querySelector('.zone-preview');
         const imgEl = previewEl.querySelector('img');
 
-        // Show Loading (AI Scanning Simulation)
         loadingEl.classList.remove('hidden');
         loadingEl.classList.add('flex');
 
-        // Simulate delay & side confirmation
-        setTimeout(() => {
-            // Hide loading, show preview
+        try {
+            // Compress the image before showing preview and attaching to form
+            const compressedFile = await compressImage(file, 1280, 1280, 0.7);
+
+            // Replace the file in the input using DataTransfer
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(compressedFile);
+            input.files = dataTransfer.files;
+
+            const url = URL.createObjectURL(compressedFile);
+            imgEl.src = url;
+
             loadingEl.classList.add('hidden');
             loadingEl.classList.remove('flex');
-
-            imgEl.src = url;
             previewEl.classList.remove('hidden');
-        }, 1500 + Math.random() * 1000); // 1.5s - 2.5s pseudo random delay
+
+        } catch (error) {
+            console.error("Compression failed", error);
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            alert("Failed to process image.");
+        }
     }
 
     // Request notification permission eagerly
@@ -319,63 +374,72 @@
         submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
 
         const data = new FormData(form);
-        const resp = await fetch(form.action, { method: 'POST', body: data });
-        const json = await resp.json();
+        try {
+            const resp = await fetch(form.action, { method: 'POST', body: data });
+            if (!resp.ok) throw new Error("Server returned " + resp.status);
+            const json = await resp.json();
 
-        if (json.success) {
-            // Show premium wait overlay
-            const overlay = document.getElementById('approvalOverlay');
-            overlay.classList.remove('hidden');
-            overlay.classList.add('flex');
+            if (json.success) {
+                // Show premium wait overlay
+                const overlay = document.getElementById('approvalOverlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
 
-            const pk = json.inspection_pk;
+                const pk = json.inspection_pk;
 
-            // Poll every 3 seconds
-            const poll = setInterval(async () => {
-                const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
-                const statusJson = await statusResp.json();
+                // Poll every 3 seconds
+                const poll = setInterval(async () => {
+                    const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
+                    const statusJson = await statusResp.json();
 
-                if (statusJson.review_status === 'approved') {
-                    clearInterval(poll);
+                    if (statusJson.review_status === 'approved') {
+                        clearInterval(poll);
 
-                    // Show success state
-                    document.getElementById('approvalLoader').classList.add('hidden');
-                    document.getElementById('approvalSuccess').classList.remove('hidden');
-                    document.getElementById('approvalSuccess').classList.add('flex');
-                    document.getElementById('approvalTitle').textContent = 'Trip Complete!';
-                    document.getElementById('approvalDesc').textContent = 'Your final inspection was approved. Redirecting...';
+                        // Show success state
+                        document.getElementById('approvalLoader').classList.add('hidden');
+                        document.getElementById('approvalSuccess').classList.remove('hidden');
+                        document.getElementById('approvalSuccess').classList.add('flex');
+                        document.getElementById('approvalTitle').textContent = 'Trip Complete!';
+                        document.getElementById('approvalDesc').textContent = 'Your final inspection was approved. Redirecting...';
 
-                    // Push Notification (Safe wrapper)
-                    try {
-                        if ("Notification" in window && Notification.permission === "granted") {
-                            new Notification("Trip Completed", {
-                                body: "Your post-trip inspection was approved. Great job today!",
-                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
-                            });
+                        // Push Notification (Safe wrapper)
+                        try {
+                            if ("Notification" in window && Notification.permission === "granted") {
+                                new Notification("Trip Completed", {
+                                    body: "Your post-trip inspection was approved. Great job today!",
+                                    icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Notification error:", err);
                         }
-                    } catch (err) {
-                        console.error("Notification error:", err);
+
+
+                        // Helper function for clearing session and redirecting
+                        window.finishTrip = async () => {
+                            await fetch("{% url 'driver:post_inspection_complete' %}");
+                            window.location.href = "{% url 'driver:home' %}";
+                        };
+
+                        // Auto-Redirect after 2s
+                        setTimeout(finishTrip, 2000);
+
+                    } else if (statusJson.review_status === 'rejected') {
+                        clearInterval(poll);
+                        alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
+                        window.location.reload();
                     }
-
-
-                    // Helper function for clearing session and redirecting
-                    window.finishTrip = async () => {
-                        await fetch("{% url 'driver:post_inspection_complete' %}");
-                        window.location.href = "{% url 'driver:home' %}";
-                    };
-
-                    // Auto-Redirect after 2s
-                    setTimeout(finishTrip, 2000);
-
-                } else if (statusJson.review_status === 'rejected') {
-                    clearInterval(poll);
-                    alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
-                    window.location.reload();
-                }
-            }, 3000);
-        } else {
-            alert("Error submitting inspection: " + JSON.stringify(json.errors));
+                }, 3000);
+            } else {
+                alert("Error submitting inspection: " + JSON.stringify(json.errors));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Complete Trip</span><span class="material-symbols-outlined text-xl">check_circle</span>';
+            }
+        } catch (err) {
+            console.error(err);
+            alert("A network error occurred or the payload is too large. Please try again.");
             submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Complete Trip</span><span class="material-symbols-outlined text-xl">check_circle</span>';
         }
     });
 </script>
