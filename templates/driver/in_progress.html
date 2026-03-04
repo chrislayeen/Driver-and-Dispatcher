@@ -332,17 +332,34 @@
                 }
 
                 try {
-                    // Reverse Geocode to get readable City, State
-                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`);
+                    // Reverse Geocode to get street-level precision
+                    const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`);
                     if (!resp.ok) throw new Error("Reverse geocode HTTP error");
                     const data = await resp.json();
 
                     let locationName = "GPS ACTIVE";
                     if (data && data.address) {
+                        const road = data.address.road || data.address.pedestrian;
+                        const neighborhood = data.address.neighbourhood || data.address.suburb;
                         const city = data.address.city || data.address.town || data.address.village || data.address.county;
-                        const state = data.address.state;
-                        if (city && state) locationName = `${city}, ${state}`;
-                        else if (city) locationName = city;
+
+                        if (road && city) {
+                            locationName = `${road}, ${city}`;
+                        } else if (road && neighborhood) {
+                            locationName = `${road}, ${neighborhood}`;
+                        } else if (neighborhood && city) {
+                            locationName = `${neighborhood}, ${city}`;
+                        } else if (city) {
+                            const state = data.address.state;
+                            locationName = state ? `${city}, ${state}` : city;
+                        } else if (road) {
+                            locationName = road;
+                        }
+
+                        // Prevent the string from blowing out the UI pill design
+                        if (locationName.length > 22) {
+                            locationName = locationName.substring(0, 20) + '..';
+                        }
                     }
 
                     locText.innerText = locationName.toUpperCase();
