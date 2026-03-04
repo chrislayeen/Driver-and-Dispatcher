@@ -357,6 +357,18 @@
     // AJAX form submission + Polling
     document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Validate all 4 photos are uploaded
+        const front = document.getElementById('upload-front').files.length;
+        const back = document.getElementById('upload-back').files.length;
+        const left = document.getElementById('upload-left').files.length;
+        const right = document.getElementById('upload-right').files.length;
+
+        if (!front || !back || !left || !right) {
+            alert('Please upload all four sides of the truck (Front, Back, Left, Right) before submitting.');
+            return;
+        }
+
         const form = e.target;
         const submitBtn = document.querySelector('button[type="submit"][form="inspectionForm"]');
         submitBtn.disabled = true;
