@@ -72,7 +72,8 @@
                 </div>
                 <div
                     class="mt-2 bg-[#0047FF] px-2 py-0.5 rounded-full shadow-md backdrop-blur-sm border border-white/20">
-                    <p class="text-[9px] font-black text-white tracking-widest">YOU</p>
+                    <p id="liveLocationText" class="text-[9px] font-black text-white tracking-widest text-center">
+                        LOCATING...</p>
                 </div>
             </div>
 
@@ -305,6 +306,27 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+
+        // ── Geolocation Request ──
+        const locText = document.getElementById('liveLocationText');
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude.toFixed(4);
+                    const lon = position.coords.longitude.toFixed(4);
+                    locText.innerText = `${lat}, ${lon}`;
+                },
+                (error) => {
+                    console.warn("Location error:", error);
+                    locText.innerText = 'NO GPS';
+                    locText.className = "text-[9px] font-black text-red-200 tracking-widest text-center";
+                },
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            locText.innerText = 'GPS N/A';
+        }
+
         // ── Report Issue Modal ──
         const reportModal = document.getElementById('reportIssueModal');
         const reportContent = document.getElementById('modalContent');
