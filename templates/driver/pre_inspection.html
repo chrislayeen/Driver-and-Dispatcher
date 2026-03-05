@@ -1,0 +1,537 @@
+{% extends "base_driver.html" %}
+{% load static %}
+{% block title %}Pre-Trip Inspection | BURGERS{% endblock %}
+
+{% block header_left %}
+<a href="{% url 'driver:home' %}"
+    class="glass-btn h-10 px-3 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+    <span class="material-symbols-outlined text-xl">arrow_back</span>
+</a>
+{% endblock %}
+
+{% block header_right %}
+<button id="notif-bell"
+    class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
+    <span class="material-symbols-outlined text-xl">notifications</span>
+    <div id="notif-badge"
+        class="absolute -top-1 -right-1 size-3 bg-red-600 rounded-full border-2 border-primary hidden"></div>
+</button>
+{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" id="inspectionForm">
+    {% csrf_token %}
+    <section class="p-4 flex flex-col gap-4">
+        <div class="flex items-center justify-between">
+            <h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Pre Inspection</h3>
+            <span
+                class="bg-[#0047FF]/10 text-[#0047FF] px-3 py-1 rounded-full text-xs font-bold uppercase">Required</span>
+        </div>
+
+        <!-- 4-Sided Photo Upload -->
+        <div class="px-6 pb-2">
+            <p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Required Photos
+            </p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 px-4">
+            <!-- Front -->
+            <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
+                onclick="triggerUpload('front')">
+                <input type="file" id="upload-front" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'front')">
+                <div
+                    class="zone-content flex flex-col items-center justify-center gap-2 w-full h-full pointer-events-none px-3 pt-3 pb-2">
+                    <!-- Truck Front SVG -->
+                    <svg class="w-3/4 max-w-[90px] flex-1" viewBox="0 0 80 64" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="14" y="4" width="52" height="8" rx="4" fill="currentColor" opacity="0.55" />
+                        <rect x="8" y="10" width="64" height="28" rx="4" fill="currentColor" opacity="0.1" />
+                        <rect x="16" y="13" width="48" height="22" rx="3" fill="currentColor" opacity="0.28" />
+                        <rect x="8" y="40" width="64" height="16" rx="3" fill="currentColor" opacity="0.1" />
+                        <rect x="10" y="43" width="18" height="9" rx="2" fill="currentColor" />
+                        <rect x="52" y="43" width="18" height="9" rx="2" fill="currentColor" />
+                        <rect x="32" y="44" width="16" height="2" rx="1" fill="currentColor" opacity="0.45" />
+                        <rect x="32" y="48" width="16" height="2" rx="1" fill="currentColor" opacity="0.45" />
+                        <rect x="32" y="52" width="16" height="2" rx="1" fill="currentColor" opacity="0.45" />
+                        <rect x="4" y="58" width="72" height="5" rx="2" fill="currentColor" opacity="0.35" />
+                        <rect x="0" y="14" width="9" height="4" rx="1" fill="currentColor" opacity="0.45" />
+                        <rect x="71" y="14" width="9" height="4" rx="1" fill="currentColor" opacity="0.45" />
+                    </svg>
+                    <span
+                        class="font-black text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Front</span>
+                </div>
+                <!-- Processing Loader -->
+                <div
+                    class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
+                    <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
+                </div>
+                <!-- Success Preview -->
+                <div class="zone-preview hidden absolute inset-0 z-20">
+                    <img src="" class="w-full h-full object-cover"
+                        onclick="event.stopPropagation(); window.openLightbox(this.src)">
+                    <button type="button" onclick="event.stopPropagation(); clearZone('front')"
+                        class="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest active:bg-red-600/80 transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Back -->
+            <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
+                onclick="triggerUpload('back')">
+                <input type="file" id="upload-back" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'back')">
+                <div
+                    class="zone-content flex flex-col items-center justify-center gap-2 w-full h-full pointer-events-none px-3 pt-3 pb-2">
+                    <!-- Truck Rear SVG -->
+                    <svg class="w-3/4 max-w-[90px] flex-1" viewBox="0 0 80 64" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="4" width="72" height="50" rx="3" fill="currentColor" opacity="0.08" />
+                        <rect x="4" y="4" width="72" height="50" rx="3" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.35" />
+                        <rect x="6" y="6" width="9" height="24" rx="1.5" fill="currentColor" />
+                        <rect x="65" y="6" width="9" height="24" rx="1.5" fill="currentColor" />
+                        <line x1="40" y1="6" x2="40" y2="54" stroke="currentColor" stroke-width="1.5"
+                            stroke-dasharray="5 4" opacity="0.4" />
+                        <rect x="18" y="46" width="44" height="4" rx="1" fill="currentColor" opacity="0.28" />
+                        <rect x="33" y="32" width="5" height="3" rx="1" fill="currentColor" opacity="0.5" />
+                        <rect x="42" y="32" width="5" height="3" rx="1" fill="currentColor" opacity="0.5" />
+                        <rect x="8" y="56" width="64" height="6" rx="2" fill="currentColor" opacity="0.32" />
+                    </svg>
+                    <span
+                        class="font-black text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Back</span>
+                </div>
+                <!-- Processing Loader -->
+                <div
+                    class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
+                    <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
+                </div>
+                <!-- Success Preview -->
+                <div class="zone-preview hidden absolute inset-0 z-20">
+                    <img src="" class="w-full h-full object-cover"
+                        onclick="event.stopPropagation(); window.openLightbox(this.src)">
+                    <button type="button" onclick="event.stopPropagation(); clearZone('back')"
+                        class="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest active:bg-red-600/80 transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left -->
+            <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
+                onclick="triggerUpload('left')">
+                <input type="file" id="upload-left" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'left')">
+                <div
+                    class="zone-content flex flex-col items-center justify-center gap-2 w-full h-full pointer-events-none px-2 pt-3 pb-2">
+                    <!-- Truck Left Profile SVG (cab on right) -->
+                    <svg class="w-full max-w-[110px] flex-1" viewBox="0 0 110 65" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="8" width="72" height="40" rx="2" fill="currentColor" opacity="0.08" />
+                        <rect x="2" y="8" width="72" height="40" rx="2" stroke="currentColor" stroke-width="2"
+                            opacity="0.38" />
+                        <rect x="68" y="34" width="10" height="8" rx="1" fill="currentColor" opacity="0.32" />
+                        <rect x="76" y="5" width="30" height="43" rx="5" fill="currentColor" opacity="0.12" />
+                        <path d="M79 9 L102 9 L106 48 L79 48 Z" fill="currentColor" opacity="0.2" />
+                        <rect x="81" y="12" width="20" height="16" rx="2" fill="currentColor" opacity="0.32" />
+                        <rect x="104" y="14" width="7" height="4" rx="1" fill="currentColor" opacity="0.45" />
+                        <circle cx="22" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="22" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <circle cx="44" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="44" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <circle cx="92" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="92" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <rect x="62" y="48" width="4" height="14" rx="1" fill="currentColor" opacity="0.28" />
+                        <line x1="0" y1="63" x2="110" y2="63" stroke="currentColor" stroke-width="1.5" opacity="0.15" />
+                    </svg>
+                    <span
+                        class="font-black text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Left
+                        Side</span>
+                </div>
+                <!-- Processing Loader -->
+                <div
+                    class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
+                    <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
+                </div>
+                <!-- Success Preview -->
+                <div class="zone-preview hidden absolute inset-0 z-20">
+                    <img src="" class="w-full h-full object-cover"
+                        onclick="event.stopPropagation(); window.openLightbox(this.src)">
+                    <button type="button" onclick="event.stopPropagation(); clearZone('left')"
+                        class="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest active:bg-red-600/80 transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div class="photo-zone relative w-full aspect-square rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center cursor-pointer active:scale-95 transition-all text-slate-400 hover:text-[#0047FF] hover:border-[#0047FF]/50 hover:bg-[#0047FF]/5"
+                onclick="triggerUpload('right')">
+                <input type="file" id="upload-right" name="photos" accept="image/*" capture="environment" class="hidden"
+                    onchange="handleZoneUpload(this, 'right')">
+                <div
+                    class="zone-content flex flex-col items-center justify-center gap-2 w-full h-full pointer-events-none px-2 pt-3 pb-2">
+                    <!-- Truck Right Profile SVG (cab on left, mirrored) -->
+                    <svg class="w-full max-w-[110px] flex-1" viewBox="0 0 110 65" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="5" width="30" height="43" rx="5" fill="currentColor" opacity="0.12" />
+                        <path d="M31 9 L8 9 L4 48 L31 48 Z" fill="currentColor" opacity="0.2" />
+                        <rect x="9" y="12" width="20" height="16" rx="2" fill="currentColor" opacity="0.32" />
+                        <rect x="0" y="14" width="7" height="4" rx="1" fill="currentColor" opacity="0.45" />
+                        <rect x="32" y="34" width="10" height="8" rx="1" fill="currentColor" opacity="0.32" />
+                        <rect x="36" y="8" width="72" height="40" rx="2" fill="currentColor" opacity="0.08" />
+                        <rect x="36" y="8" width="72" height="40" rx="2" stroke="currentColor" stroke-width="2"
+                            opacity="0.38" />
+                        <circle cx="18" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="18" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <circle cx="66" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="66" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <circle cx="88" cy="54" r="9" fill="none" stroke="currentColor" stroke-width="2.5"
+                            opacity="0.38" />
+                        <circle cx="88" cy="54" r="3.5" fill="currentColor" opacity="0.38" />
+                        <rect x="44" y="48" width="4" height="14" rx="1" fill="currentColor" opacity="0.28" />
+                        <line x1="0" y1="63" x2="110" y2="63" stroke="currentColor" stroke-width="1.5" opacity="0.15" />
+                    </svg>
+                    <span
+                        class="font-black text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400">Right
+                        Side</span>
+                </div>
+                <!-- Processing Loader -->
+                <div
+                    class="zone-loading hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm flex-col items-center justify-center gap-2 z-10">
+                    <span class="material-symbols-outlined animate-spin text-[#0047FF] text-2xl">autorenew</span>
+                    <span class="font-bold text-[10px] uppercase text-[#0047FF]">Processing</span>
+                </div>
+                <!-- Success Preview -->
+                <div class="zone-preview hidden absolute inset-0 z-20">
+                    <img src="" class="w-full h-full object-cover"
+                        onclick="event.stopPropagation(); window.openLightbox(this.src)">
+                    <button type="button" onclick="event.stopPropagation(); clearZone('right')"
+                        class="absolute bottom-0 inset-x-0 flex items-center justify-center gap-1.5 py-2.5 bg-black/50 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest active:bg-red-600/80 transition-colors">
+                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checklist -->
+    <section class="mt-2">
+        <div class="px-6 py-2">
+            <p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Visual
+                Checklist</p>
+        </div>
+        <div
+            class="divide-y divide-slate-100 dark:divide-slate-800 bg-white dark:bg-slate-900 shadow-sm border-y border-slate-100 dark:border-slate-800">
+            <label
+                class="flex items-center justify-between px-6 h-14 active:bg-slate-50 transition-colors cursor-pointer">
+                <span class="text-slate-900 text-base font-medium">Brakes Checked</span>
+                <input name="brakes_ok" type="checkbox"
+                    class="h-7 w-7 rounded-lg border-slate-300 text-[#0047FF] focus:ring-[#0047FF]/20 focus:ring-offset-0 transition-all checked:bg-[#0047FF]" />
+            </label>
+            <label
+                class="flex items-center justify-between px-6 h-14 active:bg-slate-50 transition-colors cursor-pointer">
+                <span class="text-slate-900 text-base font-medium">Tires Secure</span>
+                <input name="tires_ok" type="checkbox"
+                    class="h-7 w-7 rounded-lg border-slate-300 text-[#0047FF] focus:ring-[#0047FF]/20 focus:ring-offset-0 transition-all checked:bg-[#0047FF]" />
+            </label>
+            <label
+                class="flex items-center justify-between px-6 h-14 active:bg-slate-50 transition-colors cursor-pointer">
+                <span class="text-slate-900 text-base font-medium">Fluid Leak Inspection</span>
+                <input name="fluids_ok" type="checkbox"
+                    class="h-7 w-7 rounded-lg border-slate-300 text-[#0047FF] focus:ring-[#0047FF]/20 focus:ring-offset-0 transition-all checked:bg-[#0047FF]" />
+            </label>
+            <label
+                class="flex items-center justify-between px-6 h-14 active:bg-slate-50 transition-colors cursor-pointer">
+                <span class="text-slate-900 text-base font-medium">Lug Nuts Tensioned</span>
+                <input name="lug_nuts_ok" type="checkbox"
+                    class="h-7 w-7 rounded-lg border-slate-300 text-[#0047FF] focus:ring-[#0047FF]/20 focus:ring-offset-0 transition-all checked:bg-[#0047FF]" />
+            </label>
+            <label
+                class="flex items-center justify-between px-6 h-14 active:bg-slate-50 transition-colors cursor-pointer">
+                <span class="text-slate-900 text-base font-medium">Shock Absorbers</span>
+                <input name="shocks_ok" type="checkbox"
+                    class="h-7 w-7 rounded-lg border-slate-300 text-[#0047FF] focus:ring-[#0047FF]/20 focus:ring-offset-0 transition-all checked:bg-[#0047FF]" />
+            </label>
+        </div>
+        <div class="p-6">
+            <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+                <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">Notes
+                    (Optional)</label>
+                <textarea name="notes"
+                    class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 text-sm resize-none"
+                    placeholder="Any abnormalities noticed?" rows="2"></textarea>
+            </div>
+        </div>
+    </section>
+</form>
+{% endblock %}
+
+{% block footer %}
+<div
+    class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto p-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur border-t border-slate-200 dark:border-slate-800 z-40">
+    <button type="submit" form="inspectionForm"
+        class="w-full h-14 bg-[#0047FF] text-white text-base font-bold rounded-xl shadow-[0_8px_16px_rgba(0,71,255,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+        <span>Send for Approval</span>
+        <span class="material-symbols-outlined text-xl">send</span>
+    </button>
+    <div class="h-1 w-1/3 mx-auto mt-4 bg-slate-300 dark:bg-slate-700 rounded-full opacity-50"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<div id="lb" style="display:none" class="fixed inset-0 z-[100] bg-black/90 items-center justify-center p-4">
+    <button onclick="document.getElementById('lb').style.display='none'" class="absolute top-6 right-6 text-white">
+        <span class="material-symbols-outlined text-3xl">close</span></button>
+    <img id="lbImg" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
+</div>
+
+<!-- Premium Approval Wait Overlay (Hidden by default) -->
+<div id="approvalOverlay"
+    class="fixed inset-0 z-[200] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md hidden flex-col items-center justify-center px-6 transition-opacity duration-300">
+    <!-- Spinning Loader -->
+    <div class="relative w-24 h-24 mb-8" id="approvalLoader">
+        <div class="absolute inset-0 rounded-full border-[3px] border-slate-200 dark:border-slate-800"></div>
+        <div class="absolute inset-0 rounded-full border-[3px] border-[#0047FF] border-t-transparent animate-spin">
+        </div>
+        <div class="absolute inset-0 flex items-center justify-center text-[#0047FF]">
+            <span class="material-symbols-outlined text-3xl">local_shipping</span>
+        </div>
+    </div>
+    <!-- Success Icon (Hidden initially) -->
+    <div class="relative w-24 h-24 mb-8 hidden items-center justify-center rounded-full bg-[#0047FF]/10 text-[#0047FF] shadow-xl shadow-[#0047FF]/20"
+        id="approvalSuccess">
+        <span class="material-symbols-outlined text-5xl">verified</span>
+    </div>
+
+    <!-- Text content -->
+    <h2 id="approvalTitle" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2 text-center">
+        Awaiting Approval</h2>
+    <p id="approvalDesc" class="text-sm font-medium text-slate-500 dark:text-slate-400 text-center max-w-[280px]">
+        Your inspection has been sent to dispatch. Please hold tight, you'll be notified shortly.
+    </p>
+</div>
+
+<script>
+    // 4-Sided Upload Logic
+    window.openLightbox = function (url) {
+        document.getElementById('lb').style.display = 'flex';
+        document.getElementById('lbImg').src = url;
+    };
+
+    function triggerUpload(zone) {
+        const input = document.getElementById(`upload-${zone}`);
+        // Ensure that clicking inside the zone (when empty) triggers the input
+        if (input.files.length === 0) {
+            input.click();
+        }
+    }
+
+    function clearZone(zone) {
+        const input = document.getElementById(`upload-${zone}`);
+        input.value = ''; // clear file
+        const wrapper = input.parentElement;
+        const previewEl = wrapper.querySelector('.zone-preview');
+        previewEl.classList.add('hidden');
+        previewEl.querySelector('img').src = '';
+    }
+
+    // Client-side image compression
+    function compressImage(file, maxWidth, maxHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => reject(new Error("Compression timeout after 10s")), 10000);
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height *= maxWidth / width));
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width *= maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob(blob => {
+                        const newFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        clearTimeout(timer);
+                        resolve(newFile);
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = error => { clearTimeout(timer); reject(error); };
+            };
+            reader.onerror = error => { clearTimeout(timer); reject(error); };
+        });
+    }
+
+
+    async function handleZoneUpload(input, zone) {
+        if (!input.files || input.files.length === 0) return;
+
+        const file = input.files[0];
+        const wrapper = input.parentElement;
+
+        const loadingEl = wrapper.querySelector('.zone-loading');
+        const previewEl = wrapper.querySelector('.zone-preview');
+        const imgEl = previewEl.querySelector('img');
+
+        loadingEl.classList.remove('hidden');
+        loadingEl.classList.add('flex');
+
+        try {
+            // Compress the image before showing preview and attaching to form
+            const compressedFile = await compressImage(file, 1280, 1280, 0.7);
+
+            // Replace the file in the input using DataTransfer
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(compressedFile);
+            input.files = dataTransfer.files;
+
+            const url = URL.createObjectURL(compressedFile);
+            imgEl.src = url;
+
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            previewEl.classList.remove('hidden');
+
+        } catch (error) {
+            console.error("Compression failed", error);
+            loadingEl.classList.add('hidden');
+            loadingEl.classList.remove('flex');
+            alert("Failed to process image. Please try again.");
+            clearZone(zone);
+        }
+    }
+
+    // Request notification permission eagerly
+    document.addEventListener('DOMContentLoaded', () => {
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    });
+
+    let isSubmitting = false;
+
+    // AJAX form submission + Polling
+    document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        // Validate all 4 photos are uploaded
+        const front = document.getElementById('upload-front').files.length;
+        const back = document.getElementById('upload-back').files.length;
+        const left = document.getElementById('upload-left').files.length;
+        const right = document.getElementById('upload-right').files.length;
+
+        if (!front || !back || !left || !right) {
+            alert('Please upload all four sides of the truck (Front, Back, Left, Right) before submitting.');
+            isSubmitting = false;
+            return;
+        }
+
+        const form = e.target;
+        const submitBtn = document.querySelector('button[type="submit"][form="inspectionForm"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+
+        const data = new FormData(form);
+        try {
+            const resp = await fetch(form.action, { method: 'POST', body: data });
+            if (!resp.ok) throw new Error("Server returned API Exception.");
+            const json = await resp.json();
+
+            if (json.success) {
+                // Show premium wait overlay
+                const overlay = document.getElementById('approvalOverlay');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+
+                const pk = json.inspection_pk;
+
+                // Poll every 3 seconds
+                const poll = setInterval(async () => {
+                    const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
+                    const statusJson = await statusResp.json();
+
+                    if (statusJson.review_status === 'approved') {
+                        clearInterval(poll);
+
+                        // Show success state
+                        document.getElementById('approvalLoader').classList.add('hidden');
+                        document.getElementById('approvalSuccess').classList.remove('hidden');
+                        document.getElementById('approvalSuccess').classList.add('flex');
+                        document.getElementById('approvalTitle').textContent = 'Approved!';
+                        document.getElementById('approvalDesc').textContent = 'Your inspection was approved. Redirecting to active trip...';
+
+                        // Push Notification (Safe wrapper)
+                        try {
+                            if ("Notification" in window && Notification.permission === "granted") {
+                                new Notification("Inspection Approved", {
+                                    body: "Your pre-trip inspection has been approved by dispatch.",
+                                    icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Notification error:", err);
+                        }
+
+
+                        // Redirect after 2s
+                        setTimeout(() => {
+                            window.location.href = "{% url 'driver:in_progress' %}";
+                        }, 2000);
+
+                    } else if (statusJson.review_status === 'rejected') {
+                        clearInterval(poll);
+                        alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
+                        window.location.reload();
+                    }
+                }, 3000);
+            } else {
+                alert("Error submitting inspection: " + JSON.stringify(json.errors));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+                isSubmitting = false;
+            }
+        } catch (err) {
+            console.error(err);
+            alert("A network error occurred or the payload is too large. Please try again.");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+            isSubmitting = false;
+        }
+    });
+</script>
+{% endblock %}

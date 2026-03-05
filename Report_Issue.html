@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Report Issue Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#0b5cd5",
+                "background-light": "#f5f7f8",
+                "background-dark": "#101722",
+              },
+              fontFamily: {
+                "display": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-slate-200 font-display min-h-screen flex items-end">
+<!-- Bottom Sheet Container simulating a mobile view -->
+<div class="relative flex h-[90vh] w-full flex-col bg-background-light dark:bg-background-dark rounded-t-xl overflow-hidden shadow-2xl mx-auto max-w-md border-x border-t border-slate-300 dark:border-slate-800">
+<!-- BottomSheetHandle -->
+<div class="flex flex-col items-stretch bg-background-light dark:bg-background-dark">
+<button class="flex h-6 w-full items-center justify-center">
+<div class="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+</button>
+</div>
+<!-- Header -->
+<div class="px-4 pb-2 pt-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
+<h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-tight">Report Issue</h2>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Content Area -->
+<div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+<!-- Photo Upload Area -->
+<div class="space-y-3">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">Visual Evidence</p>
+<div class="grid grid-cols-2 gap-3">
+<div class="flex flex-col items-center justify-center gap-2 aspect-square rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer transition-all">
+<span class="material-symbols-outlined text-primary text-3xl">add_a_photo</span>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-medium">Add Photo</p>
+</div>
+<div class="relative group aspect-square rounded-xl overflow-hidden bg-cover bg-center border border-slate-200 dark:border-slate-800" data-alt="Close up of a damaged truck tire" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB48HQCg-tWRk9m0OHgXQBwHVpC0hAZrjTOj9UTH_SM9zRZbndtc4WDHioSXDNOSEYEwNreZYTK1Io6Vp07VegukTgu1_SkX0TM6AhEY65rkdprBcSHuZMmde0AL6IxLNed8saxaL8ZqwZ9viv2xymz79oqbG0MndV1CK7TBBJWqZ3pfJa823n1XpHgFSIhZqn2JZCyptU2dgWUNGEOblnhqg4_ZhslQIpkMECGartxbpxjyfTNcfKAk3A3H03n9JLBWUME4p3_SQk");'>
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white">delete</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Issue Description -->
+<div class="space-y-2">
+<label class="flex flex-col w-full">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider pb-2">Issue Description</p>
+<textarea class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 placeholder:text-slate-500 p-4 text-base font-normal leading-relaxed min-h-[140px]" placeholder="e.g., Rear left tire has a deep puncture, air pressure dropping rapidly..."></textarea>
+</label>
+</div>
+<!-- Severity Segmented Selector -->
+<div class="space-y-3">
+<p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">Severity Level</p>
+<div class="flex p-1 bg-slate-200 dark:bg-slate-800 rounded-xl gap-1">
+<button class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 font-bold transition-all">
+<span class="material-symbols-outlined mr-2 text-primary">info</span>
+                        Low
+                    </button>
+<button class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg text-slate-600 dark:text-slate-400 font-semibold hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all">
+<span class="material-symbols-outlined mr-2">warning</span>
+                        Medium
+                    </button>
+<button class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all border-2 border-transparent focus:border-red-500">
+<span class="material-symbols-outlined mr-2">error</span>
+                        High
+                    </button>
+</div>
+</div>
+<!-- Location Meta -->
+<div class="flex items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+<span class="material-symbols-outlined text-slate-500">location_on</span>
+<div class="flex-1">
+<p class="text-xs text-slate-500 font-medium">Auto-detected Location</p>
+<p class="text-sm text-slate-900 dark:text-slate-100 font-semibold" data-location="Chicago, IL">Logistics Hub 42 - Chicago, IL</p>
+</div>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 px-6 text-white text-lg font-bold shadow-lg shadow-primary/30 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">send</span>
+                Submit Issue Report
+            </button>
+</div>
+</div>
+</body></html>

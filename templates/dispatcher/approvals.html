@@ -1,0 +1,208 @@
+{% extends "base_dispatcher.html" %}
+{% load static %}
+{% block title %}Approvals | BURGERS{% endblock %}
+{% block nav_approvals %}sidebar-item-active{% endblock %}
+
+{% block page_header %}
+<div class="flex items-center gap-4">
+    <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+        <a class="hover:text-primary-600 transition-colors" href="{% url 'dispatcher:dashboard' %}">Dashboard</a>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="text-slate-900">Approvals</span>
+    </nav>
+</div>
+<div class="flex items-center gap-3">
+    <button
+        class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-400 hover:text-primary-600 hover:bg-white transition-all">
+        <span class="material-symbols-outlined">notifications</span>
+    </button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="p-10 max-w-7xl mx-auto w-full">
+    {% if inspections %}
+    <div class="space-y-6">
+        {% for insp in inspections %}
+        <div class="premium-card p-8" id="insp-card-{{ insp.pk }}">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <div class="flex items-center gap-4 mb-2">
+                        <h2 class="text-2xl font-bold tracking-tighter text-slate-900">
+                            {{ insp.get_inspection_type_display }} — Trip #{{ insp.trip_id|default:"N/A" }}
+                        </h2>
+                        {% if insp.review_status == 'approved' %}
+                        <span class="status-badge bg-green-50 text-green-600 border-green-100">Approved</span>
+                        {% elif insp.review_status == 'rejected' %}
+                        <span class="status-badge bg-red-50 text-red-600 border-red-100">Rejected</span>
+                        {% else %}
+                        <span class="status-badge bg-amber-50 text-amber-600 border-amber-100">Pending Review</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center gap-6 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            {{ insp.submitted_at|date:"d M Y, H:i" }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checklist Summary -->
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-50">
+                    <span
+                        class="material-symbols-outlined text-lg {% if insp.brakes_ok %}text-green-500{% else %}text-red-400{% endif %}">
+                        {% if insp.brakes_ok %}check_circle{% else %}cancel{% endif %}
+                    </span>
+                    <span class="text-xs font-bold text-slate-600">Brakes</span>
+                </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-50">
+                    <span
+                        class="material-symbols-outlined text-lg {% if insp.tires_ok %}text-green-500{% else %}text-red-400{% endif %}">
+                        {% if insp.tires_ok %}check_circle{% else %}cancel{% endif %}
+                    </span>
+                    <span class="text-xs font-bold text-slate-600">Tires</span>
+                </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-50">
+                    <span
+                        class="material-symbols-outlined text-lg {% if insp.fluids_ok %}text-green-500{% else %}text-red-400{% endif %}">
+                        {% if insp.fluids_ok %}check_circle{% else %}cancel{% endif %}
+                    </span>
+                    <span class="text-xs font-bold text-slate-600">Fluids</span>
+                </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-50">
+                    <span
+                        class="material-symbols-outlined text-lg {% if insp.lug_nuts_ok %}text-green-500{% else %}text-red-400{% endif %}">
+                        {% if insp.lug_nuts_ok %}check_circle{% else %}cancel{% endif %}
+                    </span>
+                    <span class="text-xs font-bold text-slate-600">Lug Nuts</span>
+                </div>
+                <div class="flex items-center gap-2 p-3 rounded-xl bg-slate-50">
+                    <span
+                        class="material-symbols-outlined text-lg {% if insp.shocks_ok %}text-green-500{% else %}text-red-400{% endif %}">
+                        {% if insp.shocks_ok %}check_circle{% else %}cancel{% endif %}
+                    </span>
+                    <span class="text-xs font-bold text-slate-600">Shocks</span>
+                </div>
+            </div>
+
+            {% if insp.notes %}
+            <div class="mb-6 p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Driver Notes</p>
+                <p class="text-sm text-slate-700 font-medium">{{ insp.notes }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Photos -->
+            {% if insp.photos.all %}
+            <div class="mb-6">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Evidence Photos ({{
+                    insp.photos.count }})</p>
+                <div class="flex flex-wrap gap-3">
+                    {% for photo in insp.photos.all %}
+                    <a href="{{ photo.image.url }}" target="_blank">
+                        <img src="{{ photo.image.url }}"
+                            class="w-20 h-20 rounded-xl object-cover border border-slate-200 hover:scale-105 transition-transform shadow-sm"
+                            alt="Photo">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if insp.review_status == 'pending' %}
+            <!-- Action Form -->
+            <form class="space-y-4 approval-form" data-pk="{{ insp.pk }}"
+                action="{% url 'dispatcher:approve_inspection' insp.pk %}">
+                {% csrf_token %}
+                <textarea name="note"
+                    class="w-full h-20 bg-white border-2 border-slate-100 rounded-2xl p-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all placeholder:text-slate-300"
+                    placeholder="Add note (optional)..."></textarea>
+                <div class="flex gap-4">
+                    <button type="button" data-action="approved"
+                        class="action-btn flex-1 h-14 bg-[#0047FF] text-white font-bold rounded-2xl shadow-lg hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">verified</span>
+                        Approve
+                    </button>
+                    <button type="button" data-action="rejected"
+                        class="action-btn flex-1 h-14 border-2 border-red-100 bg-red-50/50 text-red-600 font-bold text-sm rounded-2xl hover:bg-red-50 hover:border-red-200 active:scale-[0.98] transition-all">
+                        Reject
+                    </button>
+                </div>
+            </form>
+            {% elif insp.review_status == 'approved' %}
+            <div class="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-100">
+                <span class="material-symbols-outlined text-green-500 text-2xl">verified</span>
+                <p class="font-bold text-green-700 text-sm">This inspection has been approved.</p>
+            </div>
+            {% else %}
+            <div class="flex items-center gap-3 p-4 bg-red-50 rounded-2xl border border-red-100">
+                <span class="material-symbols-outlined text-red-500 text-2xl">cancel</span>
+                <p class="font-bold text-red-700 text-sm">This inspection was rejected.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="premium-card p-20 flex flex-col items-center justify-center text-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-slate-300 text-3xl">fact_check</span>
+        </div>
+        <p class="font-bold text-slate-400 text-sm">No approvals yet</p>
+        <p class="text-[11px] text-slate-300 font-semibold mt-1 uppercase tracking-wider">Driver inspection submissions
+            will appear here</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.approval-form').forEach(form => {
+            const pk = form.dataset.pk;
+            const card = document.getElementById('insp-card-' + pk);
+            const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            form.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const action = btn.dataset.action;
+                    const note = form.querySelector('[name=note]').value;
+                    const data = new FormData();
+                    data.append('csrfmiddlewaretoken', csrfToken);
+                    data.append('action', action);
+                    data.append('note', note);
+
+                    // Disable buttons while submitting
+                    form.querySelectorAll('.action-btn').forEach(b => b.disabled = true);
+                    btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+
+                    const resp = await fetch(form.action, { method: 'POST', body: data });
+                    const json = await resp.json();
+
+                    if (json.success) {
+                        // Update the status badge inside this card only
+                        const badge = card.querySelector('.status-badge');
+                        if (action === 'approved') {
+                            badge.className = 'status-badge bg-green-50 text-green-600 border-green-100';
+                            badge.textContent = 'Approved';
+                            form.outerHTML = `<div class="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-100">
+                            <span class="material-symbols-outlined text-green-500 text-2xl">verified</span>
+                            <p class="font-bold text-green-700 text-sm">This inspection has been approved.</p>
+                        </div>`;
+                        } else {
+                            badge.className = 'status-badge bg-red-50 text-red-600 border-red-100';
+                            badge.textContent = 'Rejected';
+                            form.outerHTML = `<div class="flex items-center gap-3 p-4 bg-red-50 rounded-2xl border border-red-100">
+                            <span class="material-symbols-outlined text-red-500 text-2xl">cancel</span>
+                            <p class="font-bold text-red-700 text-sm">This inspection was rejected.</p>
+                        </div>`;
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

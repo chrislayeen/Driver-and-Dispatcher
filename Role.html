@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Onboarding - Logistics Portal</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0B5ED7",
+                        "accent": "#3b82f6",
+                        "muted": "#64748b",
+                        "surface": "#ffffff",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "sans": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "2xl": "1rem",
+                        "3xl": "1.5rem"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-sans antialiased text-slate-900 bg-background-light dark:bg-background-dark;
+            }
+        }
+        .soft-shadow {
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.04), 0 4px 20px -5px rgba(0, 0, 0, 0.03);
+        }
+        .logo-shadow {
+            box-shadow: 0 20px 40px -12px rgba(11, 94, 215, 0.15);
+        }
+    </style>
+    <style>
+        body {
+            min-height: 100dvh;
+        }
+
+        @media (min-height: 884px) {
+            body {
+                min-height: 884px;
+            }
+        }
+    </style>
+    <style>
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-bg {
+            background-color: #0047FF;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center">
+    <div
+        class="w-full max-w-[440px] header-bg h-20 flex items-center justify-between px-6 shrink-0 shadow-lg relative z-50">
+        <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+            class="h-6 brightness-0 invert">
+        <button
+            class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+            <span class="material-symbols-outlined text-xl">language</span>
+        </button>
+    </div>
+    <div class="relative flex min-h-screen w-full max-w-[440px] flex-col overflow-x-hidden px-6 py-10">
+        <div class="flex flex-col items-center mb-10 mt-10">
+            <h1 class="text-3xl font-black text-slate-900 dark:text-slate-100 mb-2">Welcome</h1>
+            <h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold tracking-tight">Select Role</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Choose your workspace to continue.</p>
+        </div>
+        <div class="flex flex-col gap-4">
+            <button onclick="window.location.href='home.html'"
+                class="relative overflow-hidden w-full h-[94px] text-left px-5 flex items-center rounded-2xl bg-[#0047FF] soft-shadow active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/30">
+                <div class="flex items-center w-full gap-4 z-10">
+                    <div
+                        class="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/10 border border-white/20">
+                        <span class="material-symbols-outlined text-2xl text-white">steering_wheel_heat</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-base font-bold text-white leading-tight">Driver</h3>
+                        <p class="text-blue-100 text-xs leading-tight mt-0.5 line-clamp-2">Log trips and manage
+                            real-time cargo updates.</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="material-symbols-outlined text-white/60 text-xl">arrow_forward_ios</span>
+                    </div>
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+            </button>
+            <button onclick="window.location.href='Dispatcher_Dashboard.html'"
+                class="relative overflow-hidden w-full h-[94px] text-left px-5 flex items-center rounded-2xl bg-slate-50 dark:bg-slate-800/40 border-2 border-[#0047FF] soft-shadow active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/20">
+                <div class="flex items-center w-full gap-4 z-10">
+                    <div
+                        class="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <span class="material-symbols-outlined text-2xl text-[#0047FF]">monitoring</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 leading-tight">Dispatcher</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-xs leading-tight mt-0.5 line-clamp-2">
+                            Coordinate fleet movement and monitor KPIs.</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <span class="material-symbols-outlined text-slate-400 text-xl">arrow_forward_ios</span>
+                    </div>
+                </div>
+            </button>
+        </div>
+        <div class="mt-auto pt-10 text-center">
+            <p class="text-slate-400 dark:text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">v1.2.0 •
+                Secure Gateway</p>
+            <div class="mt-4 flex justify-center gap-2">
+                <div class="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                <div class="w-1.5 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full opacity-50"></div>
+                <div class="w-1.5 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full opacity-50"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

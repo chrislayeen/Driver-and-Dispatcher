@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Driver Home - In Progress</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0047FF",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <style>
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-bg {
+            background-color: #0047FF;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+    <div
+        class="relative mx-auto flex h-full min-h-screen max-w-[430px] flex-col bg-background-light dark:bg-background-dark shadow-2xl overflow-x-hidden">
+        <div class="w-full header-bg h-20 flex items-center justify-between px-4 shrink-0 shadow-lg relative z-50">
+            <a href="Pre-Inspection.html"
+                class="glass-btn h-10 px-3 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+                <span class="material-symbols-outlined text-xl">arrow_back</span>
+            </a>
+            <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+                class="h-6 brightness-0 invert">
+            <button
+                class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+                <span class="absolute top-2 right-2 flex h-2 w-2 rounded-full bg-red-500 border border-white"></span>
+            </button>
+        </div>
+        <!-- Main Content -->
+        <main class="flex-1 p-4 space-y-4 pb-24">
+            <!-- Status Card -->
+            <div
+                class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-semibold text-slate-500 uppercase tracking-widest">Current Trip
+                            Status</span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="flex h-3 w-3 rounded-full bg-emerald-500"></span>
+                            <p class="text-slate-900 dark:text-slate-100 text-2xl font-bold tracking-tight">In Progress
+                            </p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-3 py-1 rounded-full text-sm font-bold">
+                        ACTIVE
+                    </div>
+                </div>
+                <!-- Map Preview Placeholder -->
+                <div
+                    class="relative w-full h-48 rounded-lg overflow-hidden mb-4 bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                    <img alt="Map showing current truck location" class="w-full h-full object-cover opacity-80"
+                        data-alt="Digital map tracking logistics vehicle route" data-location="Chicago"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbZ81JUHG1zqy2hnPny99s7-m9Kbn20Z2bfspTGiEpqImTYIiGxnR84oX7njTb0khRvPrCgka0q5msYefT3OwrpKhRseKaoO319yUauiQtIfqMKAIo1YbIPim2oK2JF5wVnuoUQCt7mCUbvYe0UhnxPuV0mCKdWs1oS95vPI21ymW0fCQPPVU4fUDpILJrLK6W-gpEb_LDb1_k-NeRcLsOjVadSz3xL4KwxQLsCSHn26yD7IVh4UxMpuMCkb64LKYMnVPInVITvTo" />
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="relative">
+                            <div class="absolute -inset-4 rounded-full bg-primary/20"></div>
+                            <span
+                                class="material-symbols-outlined text-primary text-4xl relative z-10">local_shipping</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Estimated Arrival</p>
+                        <p class="text-slate-900 dark:text-slate-100 font-bold">14:45 PM</p>
+                    </div>
+                    <div
+                        class="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase">Distance Left</p>
+                        <p class="text-slate-900 dark:text-slate-100 font-bold">124.5 mi</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Action Buttons -->
+            <div class="space-y-3 pt-2">
+                <button id="reportIssueBtn"
+                    class="w-full flex items-center justify-center gap-3 py-4 bg-white dark:bg-slate-900 border-2 border-red-500/50 text-red-600 dark:text-red-400 rounded-xl font-bold text-lg shadow-sm active:scale-95 transition-all">
+                    <span class="material-symbols-outlined">report_problem</span>
+                    Report Issue
+                </button>
+                <button id="viewStatusBtn"
+                    class="w-full flex items-center justify-center gap-3 py-4 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl font-semibold bg-white dark:bg-slate-900 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined">assignment</span>
+                    View Trailer Status
+                </button>
+                <button onclick="window.location.href='Post-Inspection.html'"
+                    class="w-full flex items-center justify-center gap-3 py-4 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-primary/30 active:scale-[0.98] transition-colors duration-75 mt-4">
+                    <span class="material-symbols-outlined">where_to_vote</span>
+                    Arrive and Inspect
+                </button>
+            </div>
+        </main>
+    </div>
+    <style>
+        .font-variation-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+
+    <!-- Report Issue Modal -->
+    <div id="reportIssueModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div id="modalBackdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Modal Content -->
+        <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full"
+            id="modalContent">
+            <!-- Bottom Sheet Container simulating a mobile view -->
+            <div
+                class="relative flex h-[90vh] w-full flex-col bg-background-light dark:bg-background-dark rounded-t-xl overflow-hidden shadow-2xl mx-auto max-w-md border-x border-t border-slate-300 dark:border-slate-800">
+                <!-- BottomSheetHandle -->
+                <div class="flex flex-col items-stretch bg-background-light dark:bg-background-dark">
+                    <button class="flex h-6 w-full items-center justify-center">
+                        <div class="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                    </button>
+                </div>
+                <!-- Header -->
+                <div
+                    class="px-4 pb-2 pt-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
+                    <h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-tight">
+                        Report Issue</h2>
+                    <button id="closeModalBtn"
+                        class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <!-- Content Area -->
+                <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+                    <!-- Photo Upload Area -->
+                    <div class="space-y-3">
+                        <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">
+                            Visual Evidence</p>
+                        <div
+                            class="w-full min-h-[5rem] rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800/50 shadow-inner border-2 border-dashed border-slate-300 dark:border-slate-700 p-3 flex flex-col gap-3">
+                            <div class="flex items-center justify-center gap-4">
+                                <!-- Hidden Inputs for Report -->
+                                <input type="file" id="reportUploadInput" accept="image/*" class="hidden">
+                                <input type="file" id="reportCaptureInput" accept="image/*" capture="environment"
+                                    class="hidden">
+
+                                <button onclick="document.getElementById('reportUploadInput').click()"
+                                    class="flex flex-1 items-center justify-center gap-3 h-16 rounded-2xl bg-white dark:bg-slate-800 text-primary border-2 border-primary/20 dark:border-slate-600 shadow-sm active:scale-[0.97] transition-transform">
+                                    <span class="material-symbols-outlined text-2xl text-primary">upload</span>
+                                    <span class="font-bold text-xs uppercase tracking-widest text-primary">Upload</span>
+                                </button>
+                                <button onclick="document.getElementById('reportCaptureInput').click()"
+                                    class="flex flex-1 items-center justify-center gap-3 h-16 rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 active:scale-[0.97] transition-transform">
+                                    <span class="material-symbols-outlined text-2xl">photo_camera</span>
+                                    <span class="font-bold text-xs uppercase tracking-widest">Capture</span>
+                                </button>
+                            </div>
+                            <!-- Image Preview Container -->
+                            <div id="reportImagePreviewContainer" class="flex flex-wrap gap-2 empty:hidden">
+                            </div>
+                        </div>
+
+                        <!-- Fullscreen Lightbox Overlay for Report -->
+                        <div id="reportLightboxOverlay"
+                            class="fixed inset-0 z-[100] bg-black/90 hidden items-center justify-center p-4">
+                            <button onclick="closeReportLightbox()" class="absolute top-6 right-6 text-white text-4xl">
+                                <span class="material-symbols-outlined text-3xl">close</span>
+                            </button>
+                            <img id="reportLightboxImage" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
+                        </div>
+                    </div>
+                    <!-- Issue Description -->
+                    <div class="space-y-2">
+                        <label class="flex flex-col w-full">
+                            <p
+                                class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider pb-2">
+                                Issue Description</p>
+                            <textarea
+                                class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-2 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 placeholder:text-slate-500 p-4 text-base font-normal leading-relaxed min-h-[140px]"
+                                placeholder="e.g., Rear left tire has a deep puncture, air pressure dropping rapidly..."></textarea>
+                        </label>
+                    </div>
+                    <!-- Severity Segmented Selector -->
+                    <div class="space-y-3">
+                        <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">
+                            Severity Level</p>
+                        <div class="flex p-1 bg-slate-200 dark:bg-slate-800 rounded-xl gap-1">
+                            <button
+                                class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg bg-white dark:bg-slate-700 shadow-sm text-slate-900 dark:text-slate-100 font-bold transition-all">
+                                <span class="material-symbols-outlined mr-2 text-primary">info</span>
+                                Low
+                            </button>
+                            <button
+                                class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg text-slate-600 dark:text-slate-400 font-semibold hover:bg-white/50 dark:hover:bg-slate-700/50 transition-all">
+                                <span class="material-symbols-outlined mr-2">warning</span>
+                                Medium
+                            </button>
+                            <button
+                                class="flex-1 flex items-center justify-center py-3 px-4 rounded-lg text-red-600 dark:text-red-400 font-bold hover:bg-red-50 dark:hover:bg-red-900/20 transition-all border-2 border-transparent focus:border-red-500">
+                                <span class="material-symbols-outlined mr-2">error</span>
+                                High
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Location Meta -->
+                    <div
+                        class="flex items-center gap-3 p-4 rounded-xl bg-slate-100 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+                        <span class="material-symbols-outlined text-slate-500">location_on</span>
+                        <div class="flex-1">
+                            <p class="text-xs text-slate-500 font-medium">Auto-detected Location</p>
+                            <p class="text-sm text-slate-900 dark:text-slate-100 font-semibold"
+                                data-location="Chicago, IL">Logistics Hub 42 - Chicago, IL</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer Action -->
+                <div
+                    class="p-4 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800">
+                    <button id="submitIssueBtn"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 px-6 text-white text-lg font-bold shadow-lg shadow-primary/30 active:scale-[0.98] transition-all">
+                        <span class="material-symbols-outlined">send</span>
+                        Submit Issue Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trailer Status Modal -->
+    <div id="trailerStatusModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div id="statusModalBackdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        </div>
+
+        <!-- Modal Content -->
+        <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full"
+            id="statusModalContent">
+            <!-- Bottom Sheet Container simulating a mobile view -->
+            <div
+                class="relative flex h-[85vh] w-full flex-col bg-background-light dark:bg-background-dark rounded-t-xl overflow-hidden shadow-2xl mx-auto max-w-md border-x border-t border-slate-300 dark:border-slate-800">
+                <!-- BottomSheetHandle -->
+                <div class="flex flex-col items-stretch bg-background-light dark:bg-background-dark">
+                    <button class="flex h-6 w-full items-center justify-center">
+                        <div class="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                    </button>
+                </div>
+
+                <!-- Header -->
+                <div
+                    class="px-4 pb-2 pt-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-800">
+                    <div>
+                        <h2 class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-tight">
+                            Trailer Status
+                        </h2>
+                        <p class="text-primary text-sm font-semibold uppercase mt-0.5 tracking-wider">ID: TR-4920</p>
+                    </div>
+                    <button id="closeStatusModalBtn"
+                        class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="flex-1 overflow-y-auto px-4 py-6 space-y-6">
+                    <div class="space-y-3">
+                        <p class="text-slate-900 dark:text-slate-100 text-sm font-semibold uppercase tracking-wider">
+                            Current Telematics</p>
+
+                        <div class="flex flex-col gap-3">
+                            <!-- Temp -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <div
+                                    class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-50 dark:bg-slate-800 text-primary">
+                                    <span class="material-symbols-outlined text-2xl">thermometer</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p
+                                        class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wide">
+                                        Cargo Temp</p>
+                                    <div class="flex items-baseline gap-2 mt-0.5">
+                                        <p class="text-slate-900 dark:text-slate-100 font-bold text-xl leading-none">
+                                            34.2 <span class="text-base text-slate-500">°F</span></p>
+                                        <span
+                                            class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">Optimal</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tire Pressure -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                                <div
+                                    class="flex items-center justify-center w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                    <span class="material-symbols-outlined text-2xl">tire_repair</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p
+                                        class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wide">
+                                        Tire Pressure</p>
+                                    <div class="flex items-baseline gap-2 mt-0.5">
+                                        <p class="text-slate-900 dark:text-slate-100 font-bold text-xl leading-none">
+                                            Nominal</p>
+                                        <span class="text-[10px] font-bold text-slate-400">~100 PSI AVG</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Load Weight -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                                <div
+                                    class="flex items-center justify-center w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">scale</span>
+                                </div>
+                                <div class="flex-1 min-w-0 z-10">
+                                    <p
+                                        class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wide truncate">
+                                        Load Weight</p>
+                                    <div class="flex items-baseline gap-2 mt-0.5">
+                                        <p class="text-slate-900 dark:text-slate-100 font-bold text-xl leading-none">
+                                            14,200 <span class="text-base text-slate-500">lbs</span></p>
+                                        <span class="text-[10px] font-bold text-slate-400">65% CAP</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Door Status -->
+                            <div
+                                class="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                                <div
+                                    class="flex items-center justify-center w-12 h-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">lock</span>
+                                </div>
+                                <div class="flex-1 min-w-0 z-10">
+                                    <p
+                                        class="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wide truncate">
+                                        Security Seal</p>
+                                    <div class="flex items-baseline gap-2 mt-0.5">
+                                        <p class="text-slate-900 dark:text-slate-100 font-bold text-xl leading-none">
+                                            Intact</p>
+                                        <span class="text-[10px] font-bold text-slate-400">LOCKED 08:30 AM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Report Issue Modal
+            const reportModal = document.getElementById('reportIssueModal');
+            const reportContent = document.getElementById('modalContent');
+            const openReportBtn = document.getElementById('reportIssueBtn');
+            const closeReportBtn = document.getElementById('closeModalBtn');
+            const reportBackdrop = document.getElementById('modalBackdrop');
+            const submitReportBtn = document.getElementById('submitIssueBtn');
+
+            function openReportModal() {
+                reportModal.classList.remove('hidden');
+                setTimeout(() => reportContent.classList.remove('translate-y-full'), 10);
+            }
+
+            function closeReportModal() {
+                reportContent.classList.add('translate-y-full');
+                setTimeout(() => reportModal.classList.add('hidden'), 300);
+            }
+
+            openReportBtn.addEventListener('click', openReportModal);
+            closeReportBtn.addEventListener('click', closeReportModal);
+            reportBackdrop.addEventListener('click', closeReportModal);
+            submitReportBtn.addEventListener('click', () => {
+                alert('Issue submitted successfully!');
+                closeReportModal();
+            });
+
+            // Trailer Status Modal
+            const statusModal = document.getElementById('trailerStatusModal');
+            const statusContent = document.getElementById('statusModalContent');
+            const openStatusBtn = document.getElementById('viewStatusBtn');
+            const closeStatusBtn = document.getElementById('closeStatusModalBtn');
+            const statusBackdrop = document.getElementById('statusModalBackdrop');
+
+            function openStatusModal() {
+                statusModal.classList.remove('hidden');
+                setTimeout(() => statusContent.classList.remove('translate-y-full'), 10);
+            }
+
+            function closeStatusModal() {
+                statusContent.classList.add('translate-y-full');
+                setTimeout(() => statusModal.classList.add('hidden'), 300);
+            }
+
+            closeStatusBtn.addEventListener('click', closeStatusModal);
+            statusBackdrop.addEventListener('click', closeStatusModal);
+
+            // Report Modal Media Handling
+            const reportContainer = document.getElementById('reportImagePreviewContainer');
+            const reportOverlay = document.getElementById('reportLightboxOverlay');
+            const reportLightboxImg = document.getElementById('reportLightboxImage');
+
+            function handleReportFileSelect(event) {
+                const files = event.target.files;
+                for (let file of files) {
+                    const url = URL.createObjectURL(file);
+                    createReportPreview(url);
+                }
+            }
+
+            function createReportPreview(url) {
+                const div = document.createElement('div');
+                div.className = 'relative w-16 h-16 rounded-lg overflow-hidden border border-slate-200 shadow-sm';
+                div.innerHTML = `
+                    <img src="${url}" class="w-full h-full object-cover cursor-pointer" onclick="openReportLightbox('${url}')">
+                    <button onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-lg shadow-md">
+                        <span class="material-symbols-outlined text-xs">close</span>
+                    </button>
+                `;
+                reportContainer.appendChild(div);
+            }
+
+            window.openReportLightbox = function (url) {
+                reportLightboxImg.src = url;
+                reportOverlay.classList.remove('hidden');
+                reportOverlay.classList.add('flex');
+            }
+
+            window.closeReportLightbox = function () {
+                reportOverlay.classList.add('hidden');
+                reportOverlay.classList.remove('flex');
+            }
+
+            document.getElementById('reportUploadInput').addEventListener('change', handleReportFileSelect);
+            document.getElementById('reportCaptureInput').addEventListener('change', handleReportFileSelect);
+        });
+    </script>
+
+</body>
+
+</html>

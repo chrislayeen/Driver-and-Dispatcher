@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Driver Home - No Menu</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0047FF",
+                        "background-light": "#f8fafc",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-status-bar {
+            height: 44px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+    <style>
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-bg {
+            background-color: #0047FF;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 flex flex-col min-h-screen max-w-md mx-auto border-x border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative">
+    <div class="w-full header-bg h-20 flex items-center justify-between px-6 shrink-0 shadow-lg relative z-50">
+        <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+            class="h-6 brightness-0 invert">
+        <div class="flex items-center gap-3">
+            <button
+                class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
+                <span class="material-symbols-outlined text-xl">notifications</span>
+                <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border border-white"></span>
+            </button>
+            <button onclick="window.location.href='Role.html'"
+                class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+                <span class="material-symbols-outlined text-xl">logout</span>
+            </button>
+        </div>
+    </div>
+    <div class="ios-status-bar w-full bg-white dark:bg-slate-900 flex items-center justify-between px-6 shrink-0 visually-hidden"
+        style="height:0; padding:0; overflow:hidden;">
+    </div>
+    <main class="flex-1 flex flex-col overflow-y-auto pb-12">
+        <header class="px-6 pt-10 pb-6">
+            <h1 class="text-[32px] font-bold tracking-tight text-slate-900 dark:text-white leading-tight">Good Morning,
+                John</h1>
+            <p class="mt-2 text-slate-500 dark:text-slate-400 text-lg font-medium leading-normal">
+                You have no active trips assigned at the moment.
+            </p>
+        </header>
+        <div class="px-6 py-4">
+            <div
+                class="bg-white dark:bg-slate-800 rounded-2xl p-8 border border-slate-50 dark:border-slate-700 shadow-sm flex flex-col items-center text-center">
+                <div class="size-20 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mb-6">
+                    <span class="material-symbols-outlined text-primary text-4xl filled-icon">local_shipping</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Ready for Dispatch</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-base mt-2 px-4 leading-relaxed">
+                    Complete your pre-trip check to signal availability.
+                </p>
+            </div>
+        </div>
+        <div class="px-6 mt-6">
+            <button onclick="window.location.href='Pre-Inspection.html'"
+                class="w-full h-[64px] bg-primary hover:bg-primary/90 text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-colors active:scale-[0.98] duration-75">
+                <span class="material-symbols-outlined filled-icon">fact_check</span>
+                Start Pre-Trip Check
+            </button>
+        </div>
+        <div class="mt-8 px-6 flex flex-col gap-3">
+            <a class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-50 dark:border-slate-700 shadow-sm group"
+                href="#">
+                <div class="flex items-center gap-4 text-slate-700 dark:text-slate-200">
+                    <span class="material-symbols-outlined text-slate-400">menu_book</span>
+                    <span class="font-semibold">Driver Manual</span>
+                </div>
+                <span
+                    class="material-symbols-outlined text-slate-300 text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+            </a>
+            <a class="flex items-center justify-between p-5 bg-white dark:bg-slate-800 rounded-xl border border-slate-50 dark:border-slate-700 shadow-sm group"
+                href="#">
+                <div class="flex items-center gap-4 text-slate-700 dark:text-slate-200">
+                    <span class="material-symbols-outlined text-slate-400">help_center</span>
+                    <span class="font-semibold">Support &amp; FAQ</span>
+                </div>
+                <span
+                    class="material-symbols-outlined text-slate-300 text-lg group-hover:translate-x-1 transition-transform">chevron_right</span>
+            </a>
+        </div>
+    </main>
+    <div class="fixed bottom-10 right-6">
+        <button
+            class="size-16 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-2xl rounded-full flex items-center justify-center text-primary active:scale-90 transition-transform">
+            <span class="material-symbols-outlined text-3xl">support_agent</span>
+        </button>
+    </div>
+    <div
+        class="h-1.5 w-32 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mb-2 absolute bottom-2 left-1/2 -translate-x-1/2 shrink-0">
+    </div>
+
+</body>
+
+</html>

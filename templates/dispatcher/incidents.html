@@ -1,0 +1,133 @@
+{% extends "base_dispatcher.html" %}
+{% load static %}
+{% block title %}Incidents | BURGERS{% endblock %}
+{% block nav_incidents %}sidebar-item-active{% endblock %}
+
+{% block page_header %}
+<div class="flex items-center gap-4">
+    <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+        <a class="hover:text-primary-600 transition-colors" href="{% url 'dispatcher:dashboard' %}">Dashboard</a>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+        <span class="text-slate-900">Incidents</span>
+    </nav>
+</div>
+<div class="flex items-center gap-6">
+    {% with open_count=issues|length %}
+    <div
+        class="hidden md:flex items-center gap-2 px-4 py-2 {% if issues %}bg-red-50 border-red-100{% else %}bg-slate-50 border-slate-200{% endif %} rounded-full border">
+        <span
+            class="w-2 h-2 rounded-full {% if issues %}bg-red-500 animate-pulse{% else %}bg-slate-300{% endif %}"></span>
+        <span
+            class="text-xs font-bold {% if issues %}text-red-600{% else %}text-slate-400{% endif %} uppercase tracking-wider">
+            {% if issues %}{{ issues|length }} Incident{% if issues|length != 1 %}s{% endif %}{% else %}No Active
+            Incidents{% endif %}
+        </span>
+    </div>
+    {% endwith %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="p-10 max-w-7xl mx-auto w-full">
+    {% if issues %}
+    <div class="space-y-6">
+        {% for issue in issues %}
+        <div class="premium-card p-8 {% if issue.status == 'open' %}border-l-4 border-l-red-500{% endif %}">
+            <div class="flex items-start justify-between mb-6">
+                <div>
+                    <div class="flex items-center gap-4 mb-2">
+                        <h2 class="text-2xl font-bold tracking-tighter text-slate-900">
+                            Issue #{{ issue.pk }} — Trip #{{ issue.trip_id|default:"N/A" }}
+                        </h2>
+                        {% if issue.status == 'resolved' %}
+                        <span class="status-badge bg-green-50 text-green-600 border-green-100">Resolved</span>
+                        {% else %}
+                        <span class="status-badge bg-red-50 text-red-600 border-red-100">Open</span>
+                        {% endif %}
+                        <span class="status-badge
+                            {% if issue.severity == 'high' %}bg-red-50 text-red-600 border-red-100
+                            {% elif issue.severity == 'medium' %}bg-amber-50 text-amber-600 border-amber-100
+                            {% else %}bg-blue-50 text-blue-600 border-blue-100{% endif %}">
+                            {{ issue.get_severity_display }}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-6 text-xs font-bold text-slate-400 uppercase tracking-widest">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">schedule</span>
+                            {{ issue.submitted_at|date:"d M Y, H:i" }}
+                        </div>
+                        {% if issue.location %}
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">location_on</span>
+                            {{ issue.location }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-6 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Situational Report</p>
+                <p class="text-slate-700 text-base leading-relaxed font-medium italic">"{{ issue.description }}"</p>
+            </div>
+
+            <!-- Photos -->
+            {% if issue.photos.all %}
+            <div class="mb-6">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Evidence ({{
+                    issue.photos.count }})</p>
+                <div class="flex flex-wrap gap-3">
+                    {% for photo in issue.photos.all %}
+                    <a href="{{ photo.image.url }}" target="_blank">
+                        <img src="{{ photo.image.url }}"
+                            class="w-20 h-20 rounded-xl object-cover border border-slate-200 hover:scale-105 transition-transform shadow-sm"
+                            alt="Evidence">
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if issue.status == 'open' %}
+            <!-- Resolve Form -->
+            <form method="post" action="{% url 'dispatcher:resolve_issue' issue.pk %}" class="space-y-4">
+                {% csrf_token %}
+                <textarea name="note"
+                    class="w-full h-20 bg-white border-2 border-slate-100 rounded-2xl p-4 text-sm font-medium focus:ring-4 focus:ring-primary-100 focus:border-primary-600 transition-all placeholder:text-slate-300"
+                    placeholder="Resolution note (optional)..."></textarea>
+                <div class="flex gap-4">
+                    <button type="submit"
+                        class="flex-1 h-14 bg-red-600 text-white font-bold rounded-2xl shadow-lg shadow-red-600/20 hover:bg-red-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">auto_fix_high</span>
+                        Resolve &amp; Dispatch
+                    </button>
+                    <button type="button"
+                        class="flex-1 h-14 border-2 border-slate-200 text-slate-600 font-bold text-sm rounded-2xl hover:bg-white hover:border-slate-300 active:scale-[0.98] transition-all flex flex-col items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-sm">visibility</span>
+                        Acknowledge
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <div class="flex items-center gap-3 p-4 bg-green-50 rounded-2xl border border-green-100">
+                <span class="material-symbols-outlined text-green-500 text-2xl">check_circle</span>
+                <p class="font-bold text-green-700 text-sm">This incident has been resolved.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="premium-card p-20 flex flex-col items-center justify-center text-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-5">
+            <span class="material-symbols-outlined text-slate-300 text-3xl">emergency_home</span>
+        </div>
+        <p class="font-bold text-slate-400 text-sm">No active incidents</p>
+        <p class="text-[11px] text-slate-300 font-semibold mt-1 uppercase tracking-wider">Driver incident reports will
+            appear here in real-time</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

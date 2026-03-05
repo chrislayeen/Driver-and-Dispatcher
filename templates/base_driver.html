@@ -1,0 +1,247 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}BURGERS Fleet{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/burgers.css' %}" />
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="BURGERS">
+    <style>
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-btn:active {
+            transform: scale(0.9);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        /* Checkbox styling fallback */
+        input[type="checkbox"]:checked {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+            background-color: #0047FF;
+            border-color: #0047FF;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: { "primary": "#0047FF", "background-light": "#f5f7f8", "background-dark": "#101722" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                }
+            },
+        }
+    </script>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+    <div
+        class="relative mx-auto flex min-h-screen w-full md:max-w-[430px] flex-col bg-background-light dark:bg-background-dark shadow-2xl overflow-x-hidden">
+        <!-- Header: 3-column grid so logo always stays centred -->
+        <div class="w-full bg-primary h-20 grid grid-cols-3 items-center px-4 shrink-0 shadow-lg relative z-50">
+            <!-- Left: back button or logo fallback -->
+            <div class="flex items-center">
+                {% block header_left %}{% endblock %}
+            </div>
+            <!-- Centre: always Burgers logo -->
+            <div class="flex items-center justify-center">
+                <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers Logo"
+                    class="h-6 brightness-0 invert">
+            </div>
+            <!-- Right: notification / logout buttons -->
+            <div class="flex items-center justify-end">
+                {% block header_right %}
+                <div class="flex items-center gap-3">
+                    <button id="notif-bell"
+                        class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all relative">
+                        <span class="material-symbols-outlined text-xl">notifications</span>
+                        <div id="notif-badge"
+                            class="absolute -top-1 -right-1 size-3 bg-red-600 rounded-full border-2 border-primary hidden">
+                        </div>
+                    </button>
+                    <a href="{% url 'role_select' %}"
+                        class="glass-btn size-10 rounded-xl flex items-center justify-center text-white active:scale-90 transition-all">
+                        <span class="material-symbols-outlined text-xl">logout</span>
+                    </a>
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+        <!-- Main -->
+        <main class="flex-1 flex flex-col overflow-y-auto pb-24">
+            {% block content %}{% endblock %}
+        </main>
+        {% block footer %}{% endblock %}
+    </div>
+
+    <script>
+        // Global Notification Polling & Push
+        let swRegistration = null;
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/js/sw.js')
+                    .then(reg => {
+                        swRegistration = reg;
+                        console.log('SW Registered');
+                    });
+            });
+        }
+
+        async function checkNotifications() {
+            try {
+                const resp = await fetch('{% url "driver:get_notifications" %}');
+                if (!resp.ok) return;
+                const data = await resp.json();
+                const badge = document.getElementById('notif-badge');
+
+                if (data.unread_count > 0) {
+                    badge.classList.remove('hidden');
+
+                    const latest = data.notifications[0];
+                    const lastShownId = localStorage.getItem('last_notif_id');
+
+                    if (latest.id != lastShownId) {
+                        localStorage.setItem('last_notif_id', latest.id);
+
+                        // Trigger Notification via Service Worker (Best for Mobile)
+                        if (swRegistration && Notification.permission === "granted") {
+                            swRegistration.showNotification(latest.title, {
+                                body: latest.message,
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg",
+                                badge: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg",
+                                vibrate: [100, 50, 100],
+                                data: { url: '/driver/' }
+                            });
+                        } else if ("Notification" in window && Notification.permission === "granted") {
+                            // Fallback to legacy API
+                            new Notification(latest.title, {
+                                body: latest.message,
+                                icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
+                            });
+                        }
+                    }
+                } else {
+                    badge.classList.add('hidden');
+                }
+            } catch (e) { console.error("Poll error", e); }
+        }
+
+        // Toggle Notification Modal
+        const notifModal = document.getElementById('notif-modal');
+        const notifContent = document.getElementById('notif-modal-content');
+        const notifList = document.getElementById('notif-list');
+
+        function openNotifModal() {
+            notifModal.classList.remove('hidden');
+            setTimeout(() => notifContent.classList.remove('translate-y-full'), 10);
+            renderNotifications();
+        }
+
+        function closeNotifModal() {
+            notifContent.classList.add('translate-y-full');
+            setTimeout(() => notifModal.classList.add('hidden'), 300);
+            document.getElementById('notif-badge').classList.add('hidden');
+        }
+
+        async function renderNotifications() {
+            const resp = await fetch('{% url "driver:get_notifications" %}');
+            const data = await resp.json();
+            notifList.innerHTML = '';
+
+            if (data.notifications.length === 0) {
+                notifList.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-20 text-slate-400">
+                        <span class="material-symbols-outlined text-5xl mb-4 opacity-20">notifications_off</span>
+                        <p class="text-sm italic">All caught up!</p>
+                    </div>`;
+                return;
+            }
+
+            data.notifications.forEach(n => {
+                const item = document.createElement('div');
+                item.className = 'p-5 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm transition-all active:scale-[0.98]';
+                item.innerHTML = `
+                    <div class="flex justify-between items-start mb-1">
+                        <p class="font-bold text-slate-900 dark:text-white text-base">${n.title}</p>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${n.created_at}</span>
+                    </div>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">${n.message}</p>
+                `;
+                notifList.appendChild(item);
+
+                // Mark as read in background
+                fetch(`/driver/notifications/read/${n.id}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                });
+            });
+        }
+
+        document.getElementById('notif-bell')?.addEventListener('click', openNotifModal);
+        document.getElementById('close-notif-btn')?.addEventListener('click', closeNotifModal);
+        document.getElementById('notif-modal-backdrop')?.addEventListener('click', closeNotifModal);
+
+        setInterval(checkNotifications, 8000);
+        document.addEventListener('DOMContentLoaded', () => {
+            checkNotifications();
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+        });
+    </script>
+
+    <!-- Premium Notification Modal -->
+    <div id="notif-modal" class="fixed inset-0 z-[100] hidden">
+        <div id="notif-modal-backdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div id="notif-modal-content"
+            class="absolute inset-x-0 bottom-0 z-[101] transform transition-transform duration-300 translate-y-full">
+            <div
+                class="relative flex h-[85vh] w-full flex-col bg-background-light dark:bg-background-dark rounded-t-[32px] overflow-hidden shadow-2xl mx-auto max-w-[430px] border-t border-slate-200 dark:border-slate-800">
+                <!-- Modal Handle -->
+                <div class="flex h-8 w-full items-center justify-center shrink-0">
+                    <div class="h-1.5 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
+                </div>
+
+                <!-- Modal Header -->
+                <div
+                    class="px-6 pb-4 pt-2 flex justify-between items-center border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Inbox</h2>
+                        <p class="text-primary font-bold text-[10px] uppercase tracking-widest mt-0.5">Fleet Alerts</p>
+                    </div>
+                    <button id="close-notif-btn"
+                        class="size-10 flex items-center justify-center bg-slate-100 dark:bg-slate-800 rounded-full text-slate-500 transition-colors active:scale-90">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <!-- Notification List -->
+                <div id="notif-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+                    <!-- Dynamic Content -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
