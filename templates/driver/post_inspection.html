@@ -298,31 +298,7 @@
     <img id="lbImg" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
 </div>
 
-<!-- Premium Approval Wait Overlay (Hidden by default) -->
-<div id="approvalOverlay"
-    class="fixed inset-0 z-[200] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md hidden flex-col items-center justify-center px-6 transition-opacity duration-300">
-    <!-- Spinning Loader -->
-    <div class="relative w-24 h-24 mb-8" id="approvalLoader">
-        <div class="absolute inset-0 rounded-full border-[3px] border-slate-200 dark:border-slate-800"></div>
-        <div class="absolute inset-0 rounded-full border-[3px] border-[#0047FF] border-t-transparent animate-spin">
-        </div>
-        <div class="absolute inset-0 flex items-center justify-center text-[#0047FF]">
-            <span class="material-symbols-outlined text-3xl">local_shipping</span>
-        </div>
-    </div>
-    <!-- Success Icon (Hidden initially) -->
-    <div class="relative w-24 h-24 mb-8 hidden items-center justify-center rounded-full bg-[#0047FF]/10 text-[#0047FF] shadow-xl shadow-[#0047FF]/20"
-        id="approvalSuccess">
-        <span class="material-symbols-outlined text-5xl">verified</span>
-    </div>
 
-    <!-- Text content -->
-    <h2 id="approvalTitle" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-2 text-center">
-        Awaiting Approval</h2>
-    <p id="approvalDesc" class="text-sm font-medium text-slate-500 dark:text-slate-400 text-center max-w-[280px]">
-        Your inspection has been sent to dispatch. Please hold tight, you'll be notified shortly.
-    </p>
-</div>
 
 <script>
     // 4-Sided Upload Logic
@@ -472,56 +448,10 @@
             const json = await resp.json();
 
             if (json.success) {
-                // Show premium wait overlay
-                const overlay = document.getElementById('approvalOverlay');
-                overlay.classList.remove('hidden');
-                overlay.classList.add('flex');
+                // Instantly Auto-Approve and Redirect
+                await fetch("{% url 'driver:post_inspection_complete' %}");
+                window.location.href = "{% url 'driver:home' %}";
 
-                const pk = json.inspection_pk;
-
-                // Poll every 3 seconds
-                const poll = setInterval(async () => {
-                    const statusResp = await fetch(`/driver/inspection-status/${pk}/`);
-                    const statusJson = await statusResp.json();
-
-                    if (statusJson.review_status === 'approved') {
-                        clearInterval(poll);
-
-                        // Show success state
-                        document.getElementById('approvalLoader').classList.add('hidden');
-                        document.getElementById('approvalSuccess').classList.remove('hidden');
-                        document.getElementById('approvalSuccess').classList.add('flex');
-                        document.getElementById('approvalTitle').textContent = 'Trip Complete!';
-                        document.getElementById('approvalDesc').textContent = 'Your final inspection was approved. Redirecting...';
-
-                        // Push Notification (Safe wrapper)
-                        try {
-                            if ("Notification" in window && Notification.permission === "granted") {
-                                new Notification("Trip Completed", {
-                                    body: "Your post-trip inspection was approved. Great job today!",
-                                    icon: "https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg"
-                                });
-                            }
-                        } catch (err) {
-                            console.error("Notification error:", err);
-                        }
-
-
-                        // Helper function for clearing session and redirecting
-                        window.finishTrip = async () => {
-                            await fetch("{% url 'driver:post_inspection_complete' %}");
-                            window.location.href = "{% url 'driver:home' %}";
-                        };
-
-                        // Auto-Redirect after 2s
-                        setTimeout(finishTrip, 2000);
-
-                    } else if (statusJson.review_status === 'rejected') {
-                        clearInterval(poll);
-                        alert("Your inspection was REJECTED by dispatch. Please review and re-submit.");
-                        window.location.reload();
-                    }
-                }, 3000);
             } else {
                 alert("Error submitting inspection: " + JSON.stringify(json.errors));
                 submitBtn.disabled = false;

@@ -84,14 +84,16 @@ def pre_inspection(request):
                 inspection = form.save(commit=False)
                 inspection.trip = trip
                 inspection.inspection_type = 'pre'
+                inspection.review_status = 'approved'
                 inspection.save()
+
+                trip.status = 'in_progress'
+                trip.save()
 
                 photos = request.FILES.getlist('photos')[:4]
                 for f in photos:
                     InspectionPhoto.objects.create(inspection=inspection, image=f)
 
-                # Store inspection ID in session so we can poll it
-                request.session['pending_inspection_id'] = inspection.id
 
             # Return JSON — the AJAX handler on the page will show the waiting overlay
             return JsonResponse({'success': True, 'inspection_pk': inspection.id})
@@ -145,14 +147,17 @@ def post_inspection(request):
                 inspection = form.save(commit=False)
                 inspection.trip = trip
                 inspection.inspection_type = 'post'
+                inspection.review_status = 'approved'
                 inspection.save()
+
+                if trip:
+                    trip.status = 'completed'
+                    trip.save()
 
                 photos = request.FILES.getlist('photos')[:4]
                 for f in photos:
                     InspectionPhoto.objects.create(inspection=inspection, image=f)
 
-                # Store post-inspection ID for polling
-                request.session['pending_post_inspection_id'] = inspection.id
 
             return JsonResponse({'success': True, 'inspection_pk': inspection.id})
         return JsonResponse({'success': False, 'errors': form.errors}, status=400)
