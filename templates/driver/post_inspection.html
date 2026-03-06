@@ -439,7 +439,8 @@
         const form = e.target;
         const submitBtn = document.querySelector('button[type="submit"][form="postInspectionForm"]');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span><span class="ml-2 truncate">Uploading Photos...</span>';
+
 
         const data = new FormData(form);
         try {

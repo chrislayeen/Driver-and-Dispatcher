@@ -284,8 +284,9 @@
     class="fixed bottom-0 left-0 right-0 max-w-[430px] mx-auto p-4 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur border-t border-slate-200 dark:border-slate-800 z-40">
     <button type="submit" form="inspectionForm"
         class="w-full h-14 bg-[#0047FF] text-white text-base font-bold rounded-xl shadow-[0_8px_16px_rgba(0,71,255,0.3)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-        <span>Send for Approval</span>
-        <span class="material-symbols-outlined text-xl">send</span>
+        <span>Start Trip</span>
+        <span class="material-symbols-outlined text-xl">directions_car</span>
+
     </button>
     <div class="h-1 w-1/3 mx-auto mt-4 bg-slate-300 dark:bg-slate-700 rounded-full opacity-50"></div>
 </div>
@@ -440,7 +441,8 @@
         const form = e.target;
         const submitBtn = document.querySelector('button[type="submit"][form="inspectionForm"]');
         submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+        submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span><span class="ml-2 truncate">Uploading Photos...</span>';
+
 
         const data = new FormData(form);
         try {
@@ -455,15 +457,16 @@
             } else {
                 alert("Error submitting inspection: " + JSON.stringify(json.errors));
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+                submitBtn.innerHTML = '<span>Start Trip</span><span class="material-symbols-outlined text-xl">directions_car</span>';
                 isSubmitting = false;
             }
         } catch (err) {
             console.error(err);
             alert("A network error occurred or the payload is too large. Please try again.");
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span>Submit Inspection</span><span class="material-symbols-outlined text-xl">arrow_forward</span>';
+            submitBtn.innerHTML = '<span>Start Trip</span><span class="material-symbols-outlined text-xl">directions_car</span>';
             isSubmitting = false;
+
         }
     });
 </script>
