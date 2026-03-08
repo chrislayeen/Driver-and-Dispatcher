@@ -232,55 +232,80 @@
             <button class="flex h-6 w-full items-center justify-center">
                 <div class="h-1.5 w-12 rounded-full bg-slate-300"></div>
             </button>
-            <div class="px-4 pb-2 pt-4 flex justify-between items-center border-b border-slate-200">
-                <div>
-                    <h2 class="text-slate-900 text-2xl font-bold leading-tight tracking-tight">Trailer Status</h2>
-                    <p class="text-[#0047FF] text-sm font-semibold uppercase mt-0.5 tracking-wider">Active Trip</p>
-                </div>
+            <div class="px-5 pb-3 pt-5 flex justify-between items-center bg-slate-50/50">
+                <h2 class="text-slate-900 text-[18px] font-black tracking-tight">Live System Status</h2>
                 <button id="closeStatusModalBtn"
-                    class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
-                    <span class="material-symbols-outlined">close</span>
+                    class="p-2 text-slate-500 hover:bg-slate-200 rounded-full transition-colors -mr-2">
+                    <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
-            <div class="flex-1 overflow-y-auto px-4 py-6 space-y-4">
-                <p class="text-slate-900 text-sm font-semibold uppercase tracking-wider">Current Telematics</p>
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-50 text-[#0047FF]">
-                        <span class="material-symbols-outlined text-2xl">thermometer</span>
+            <div class="flex-1 overflow-y-auto px-4 py-4 space-y-8 pb-8">
+
+                <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    <div
+                        class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                        <span class="text-slate-500 text-xs mb-1">Tire Pressure</span>
+                        <span class="trailer-status-val font-bold text-sm">OK</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Cargo Temp</p>
-                        <p class="text-slate-900 font-bold text-xl">— <span class="text-base text-slate-500">°F</span>
-                        </p>
+                    <div
+                        class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                        <span class="text-slate-500 text-xs mb-1">Supply Pressure</span>
+                        <span class="trailer-status-val font-bold text-sm">Low</span>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-slate-100 text-slate-600">
-                        <span class="material-symbols-outlined text-2xl">tire_repair</span>
+                    <div
+                        class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem] col-span-2 sm:col-span-1">
+                        <span class="text-slate-500 text-xs mb-1">Smart-Boxes</span>
+                        <span class="trailer-status-val font-bold text-sm">Disconnected</span>
                     </div>
-                    <div class="flex-1">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Tire Pressure</p>
-                        <p class="text-slate-900 font-bold text-xl">—</p>
+                    <div
+                        class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                        <span class="text-slate-500 text-xs mb-1">Battery Status</span>
+                        <span class="trailer-status-val font-bold text-sm">Low</span>
                     </div>
-                </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-slate-100 text-slate-600">
-                        <span class="material-symbols-outlined text-2xl">scale</span>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Load Weight</p>
-                        <p class="text-slate-900 font-bold text-xl">—</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 p-4 rounded-xl bg-white border border-slate-200 shadow-sm">
-                    <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600">
-                        <span class="material-symbols-outlined text-2xl">lock</span>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide">Security Seal</p>
-                        <p class="text-slate-900 font-bold text-xl">—</p>
+                    <div
+                        class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                        <span class="text-slate-500 text-xs mb-1">Demand Pressure</span>
+                        <span class="trailer-status-val font-bold text-sm">Low</span>
                     </div>
                 </div>
+
+                <div>
+                    <h3 class="text-slate-900 text-sm font-black mb-3 ml-1 tracking-tight">Demand Pressure</h3>
+                    <div
+                        class="grid grid-cols-2 shadow-inner bg-slate-100/30 p-2 sm:p-0 sm:bg-transparent sm:shadow-none rounded-2xl gap-3 sm:grid-cols-2">
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">First Axle, Left Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">First Axle, Right Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">Second Axle, Left Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">Second Axle, Right Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">Third Axle, Left Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                        <div
+                            class="p-4 rounded-2xl bg-white shadow-sm border border-slate-100 flex flex-col justify-center min-h-[5rem]">
+                            <span class="text-slate-500 text-xs mb-1">Third Axle, Right Wheel</span>
+                            <span class="trailer-status-val font-bold text-sm">Low</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -420,7 +445,29 @@
             setTimeout(() => statusModal.classList.add('hidden'), 300);
         }
 
-        document.getElementById('viewStatusBtn').addEventListener('click', openStatusModal);
+        // Apply colors to trailer status values dynamically
+        function updateTrailerStatusColors() {
+            document.querySelectorAll('.trailer-status-val').forEach(el => {
+                const text = el.innerText.trim().toLowerCase();
+                // Reset classes first
+                el.classList.remove('text-emerald-600', 'text-red-600', 'text-amber-500', 'text-slate-500');
+
+                if (['ok', 'normal', 'connected', 'good', 'optimal'].includes(text)) {
+                    el.classList.add('text-emerald-600');
+                } else if (['low', 'high', 'disconnected', 'error', 'critical', 'issue'].includes(text)) {
+                    el.classList.add('text-red-600');
+                } else if (['warning', 'moderate'].includes(text)) {
+                    el.classList.add('text-amber-500');
+                } else {
+                    el.classList.add('text-slate-500'); // Fallback grey
+                }
+            });
+        }
+
+        document.getElementById('viewStatusBtn').addEventListener('click', () => {
+            updateTrailerStatusColors(); // Ensure colors are correct right before opening
+            openStatusModal();
+        });
         document.getElementById('closeStatusModalBtn').addEventListener('click', closeStatusModal);
         document.getElementById('statusModalBackdrop').addEventListener('click', closeStatusModal);
 
