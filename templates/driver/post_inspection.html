@@ -451,7 +451,7 @@
             if (json.success) {
                 // Instantly Auto-Approve and Redirect
                 await fetch("{% url 'driver:post_inspection_complete' %}");
-                window.location.href = "{% url 'driver:home' %}";
+                window.location.href = "{% url 'role_select' %}";
 
             } else {
                 alert("Error submitting inspection: " + JSON.stringify(json.errors));
