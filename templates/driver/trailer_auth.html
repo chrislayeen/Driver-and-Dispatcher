@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trailer Verification | BURGERS Fleet</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style> 
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-btn { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col max-w-md mx-auto relative shadow-2xl overflow-hidden text-slate-900">
+    <!-- Premium Header -->
+    <header class="h-[80px] bg-[#215EFA] flex items-center justify-between px-6 shrink-0 w-full relative shadow-md">
+        <a href="{% url 'driver:scanner' %}" class="w-11 h-11 rounded-2xl glass-btn flex items-center justify-center active:scale-90 transition-all" style="padding-left: 6px;">
+            <span class="material-symbols-outlined text-white text-[1.4rem]">arrow_back_ios</span>
+        </a>
+        <img src="https://burgersgroup.com/wp-content/uploads/2025/05/logo-blue.svg" alt="Burgers" class="h-6 brightness-0 invert absolute left-1/2 -translate-x-1/2">
+        <button class="h-10 px-4 rounded-2xl glass-btn flex items-center gap-2 text-white active:scale-90 transition-all">
+            <span class="material-symbols-outlined text-[1.1rem]">language</span>
+            <span class="text-[0.7rem] font-bold tracking-widest mt-0.5 uppercase">EN</span>
+        </button>
+    </header>
+
+    <main class="flex-1 flex flex-col p-6 gap-6">
+        <!-- Title & Instruction -->
+        <!-- Center-Aligned Instruction Card -->
+        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 flex flex-col items-center text-center">
+            <h1 class="text-[#215EFA] font-black text-[10px] uppercase tracking-[0.3em] mb-4">Trailer Authentication</h1>
+            
+            <div class="max-w-[280px]">
+                <h2 class="text-slate-900 font-extrabold text-xl mb-1 tracking-tight">Verification Sequence</h2>
+                <p class="text-slate-500 font-medium text-sm leading-relaxed px-2">Press the buttons on the trailer control panel in the sequence shown below.</p>
+                
+                <!-- Refined Timer Pill (Moved Down) -->
+                <div class="mt-6 inline-flex mx-auto px-3.5 py-1.5 bg-slate-50 border border-slate-100 rounded-full items-center gap-2.5 shadow-sm">
+                    <div class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#215EFA] opacity-40"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-[#215EFA]"></span>
+                    </div>
+                    <span id="timer" class="text-xs font-black text-slate-500 tabular-nums tracking-wider uppercase">120s remaining</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Button Dock (Background Separation) -->
+        <div class="mt-4 bg-slate-50 border border-slate-100 rounded-[3rem] p-8 shadow-inner flex flex-col items-center">
+            <div id="button-grid" class="grid grid-cols-2 gap-4 w-full max-w-[280px]">
+                <!-- Buttons injected here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const redirectSuccess = "{% url 'driver:pre_inspection' %}";
+        const redirectFail = "{% url 'driver:scanner' %}";
+
+        const allActions = [
+            { id: 'tip_up', label: 'Tip Up', icon: 'expand_less' },
+            { id: 'tip_down', label: 'Tip Down', icon: 'expand_more' },
+            { id: 'plat_up', label: 'Platform Up', icon: 'keyboard_arrow_up' },
+            { id: 'plat_down', label: 'Platform Down', icon: 'keyboard_arrow_down' },
+            { id: 'plat_close', label: 'Platform Close', icon: 'close_fullscreen' },
+            { id: 'plat_open', label: 'Platform Open', icon: 'open_in_full' }
+        ];
+        
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        const selectedActions = shuffle([...allActions]).slice(0, 4);
+        const grid = document.getElementById('button-grid');
+        let clickedCount = 0;
+
+        selectedActions.forEach((action, idx) => {
+            const seqNumber = idx + 1;
+            
+            const btn = document.createElement('button');
+            btn.className = 'group relative w-full aspect-square bg-white rounded-full border-2 border-slate-100 shadow-sm flex flex-col items-center justify-center active:scale-95 transition-all outline-none mx-auto max-w-[140px] px-4';
+            
+            const textEl = document.createElement('span');
+            textEl.className = 'font-extrabold text-[0.85rem] text-slate-800 uppercase tracking-widest text-center leading-tight transition-all duration-300';
+            textEl.innerHTML = action.label; // Using innerHTML to allow <br>
+
+            const badge = document.createElement('div');
+            badge.className = 'absolute top-1 right-1 w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-black text-[0.7rem] border-2 border-white z-10 transition-colors duration-300';
+            badge.innerText = seqNumber;
+
+            btn.appendChild(badge);
+            btn.appendChild(textEl);
+            grid.appendChild(btn);
+
+            btn.addEventListener('click', () => {
+                if(btn.dataset.verified === "true") return;
+                
+                btn.dataset.verified = "true";
+                btn.classList.replace('bg-white', 'bg-emerald-50/10');
+                btn.classList.replace('border-slate-100', 'border-emerald-500');
+                badge.classList.replace('bg-slate-800', 'bg-emerald-600');
+                
+                textEl.innerHTML = '<span class="material-symbols-outlined text-emerald-600 text-4xl flex justify-center">check_circle</span>';
+                textEl.classList.replace('text-slate-800', 'text-emerald-700');
+
+                clickedCount++;
+                if(clickedCount >= 4) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        window.location.href = redirectSuccess;
+                    }, 500);
+                }
+            });
+        });
+
+        // Setup Countdown Timer with SVG progress
+        let timeLeft = 120;
+        const totalTime = 120;
+        const timerEl = document.getElementById('timer');
+        const barEl = document.getElementById('timer-bar');
+        const circumference = 314;
+
+        const interval = setInterval(() => {
+            timeLeft--;
+            timerEl.innerText = timeLeft;
+            
+            const offset = (timeLeft / totalTime) * circumference;
+            // barEl.style.strokeDashoffset = offset; // This should be decreasing for visual effect
+
+            if(timeLeft <= 0) {
+                clearInterval(interval);
+                alert("Authentication timed out.");
+                window.location.href = redirectFail;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -4,6 +4,8 @@ from . import views
 app_name = 'driver'
 
 urlpatterns = [
+    path('scanner/', views.scanner_view, name='scanner'),
+    path('trailer-auth/', views.trailer_verification_view, name='trailer_verification'),
     path('', views.driver_home, name='home'),
     path('pre-inspection/', views.pre_inspection, name='pre_inspection'),
     path('in-progress/', views.in_progress, name='in_progress'),

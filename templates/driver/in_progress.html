@@ -41,11 +41,6 @@
                             LOCATING...</h2>
                     </div>
                 </div>
-                <div
-                    class="bg-slate-800/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700/50 text-right">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Destination</p>
-                    <p class="text-emerald-400 font-black text-sm">KOCHI</p>
-                </div>
             </div>
         </div>
 
@@ -67,22 +62,6 @@
                 <p class="text-white font-black tracking-tight text-xl">— <span
                         class="text-xs text-slate-500 font-bold ml-0.5">—</span></p>
             </div>
-            <div class="bg-slate-900 p-4 flex flex-col items-start">
-                <div class="flex items-center gap-1.5 opacity-60 mb-1">
-                    <span class="material-symbols-outlined text-[14px] text-white">route</span>
-                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Left to Dest</p>
-                </div>
-                <p class="text-white font-black tracking-tight text-xl">— <span
-                        class="text-xs text-slate-500 font-bold ml-0.5">km</span></p>
-            </div>
-            <div class="bg-slate-900 p-4 flex flex-col items-start">
-                <div class="flex items-center gap-1.5 opacity-60 mb-1">
-                    <span class="material-symbols-outlined text-[14px] text-white">local_cafe</span>
-                    <p class="text-[10px] text-white font-bold uppercase tracking-widest">Next Stop</p>
-                </div>
-                <p class="text-[#0047FF] font-black tracking-tight text-xl">— <span
-                        class="text-xs text-[#0047FF]/60 font-bold ml-0.5">km</span></p>
-            </div>
         </div>
 
         <!-- Active Dispatch Note -->
@@ -96,20 +75,7 @@
         </div>
     </div>
 
-    <!-- Action Buttons -->
     <div class="space-y-3 pt-2">
-        <!-- Primary CTA -->
-        <a href="#" id="openMapsBtn" target="_blank"
-            class="w-full flex items-center justify-center gap-3 py-4 bg-[#1a73e8] hover:bg-[#1a73e8]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#1a73e8]/30 active:scale-[0.98] transition-all opacity-50 cursor-not-allowed">
-            <!-- Google Maps Pin Logo -->
-            <svg class="w-5 h-6 flex-shrink-0" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M12 0C7.167 0 3 4.167 3 9c0 7 9 21 9 21s9-14 9-21c0-4.833-4.167-9-9-9zm0 13.5A4.5 4.5 0 1 1 12 4.5a4.5 4.5 0 0 1 0 9z"
-                    fill="white" />
-            </svg>
-            Open Route in Maps
-        </a>
-
         <!-- Compact Utility Icon Row -->
         <div class="grid grid-cols-2 gap-3">
             <button id="reportIssueBtn"
@@ -124,6 +90,20 @@
             </button>
         </div>
 
+        <!-- Support and Manual -->
+        <div class="grid grid-cols-2 gap-3">
+            <a href="https://burgersgroup.com/dd-manuals/"
+                class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[#0047FF] opacity-70">menu_book</span>
+                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Manual</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm active:scale-95 transition-all">
+                <span class="material-symbols-outlined text-[#0047FF] opacity-70">contact_support</span>
+                <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Support</span>
+            </a>
+        </div>
+
         <!-- End-of-trip action -->
         <a href="{% url 'driver:post_inspection' %}"
             class="w-full flex items-center justify-center gap-3 py-4 bg-[#0047FF] hover:bg-[#0047FF]/90 text-white rounded-xl font-bold text-lg shadow-lg shadow-[#0047FF]/30 active:scale-[0.98] transition-colors duration-75">
@@ -136,9 +116,9 @@
 {% block extra_js %}
 
 <!-- Report Issue Modal -->
-<div id="reportIssueModal" class="fixed inset-0 z-50 hidden">
+<div id="reportIssueModal" class="fixed inset-0 z-50 opacity-0 pointer-events-none transition-opacity duration-200">
     <div id="modalBackdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-    <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full"
+    <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full ease-out"
         id="modalContent">
         <div
             class="relative flex h-[90vh] w-full flex-col bg-[#f5f7f8] rounded-t-xl overflow-hidden shadow-2xl mx-auto max-w-md border-x border-t border-slate-300">
@@ -223,9 +203,9 @@
 </div>
 
 <!-- Trailer Status Modal -->
-<div id="trailerStatusModal" class="fixed inset-0 z-50 hidden">
+<div id="trailerStatusModal" class="fixed inset-0 z-50 opacity-0 pointer-events-none transition-opacity duration-200">
     <div id="statusModalBackdrop" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-    <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full"
+    <div class="absolute inset-x-0 bottom-0 z-50 transform transition-transform duration-300 translate-y-full ease-out"
         id="statusModalContent">
         <div
             class="relative flex h-[85vh] w-full flex-col bg-[#f5f7f8] rounded-t-xl overflow-hidden shadow-2xl mx-auto max-w-md border-x border-t border-slate-300">
@@ -313,11 +293,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-
-        // ── Geolocation & Routing Request ──
         const locText = document.getElementById('liveLocationText');
-        const mapsBtn = document.getElementById('openMapsBtn');
-        const destination = "Kochi"; // Simulated dynamic backend variable string
 
         if ("geolocation" in navigator) {
             let retryCount = 0;
@@ -326,12 +302,6 @@
             const successCb = async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-
-                // Update Google Maps Link with origin + destination
-                if (mapsBtn) {
-                    mapsBtn.href = `https://www.google.com/maps/dir/?api=1&origin=${lat},${lon}&destination=${encodeURIComponent(destination)}`;
-                    mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
 
                 try {
                     // Reverse Geocode to get street-level precision
@@ -383,11 +353,6 @@
 
                 // Hard fallback
                 locText.innerText = 'DEV LOC';
-
-                if (mapsBtn) {
-                    mapsBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
-                    mapsBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
             };
 
             // Start tracking
@@ -397,14 +362,65 @@
             locText.innerText = 'GPS N/A';
         }
 
+        /**
+         * Compresses image using canvas to a target dimension and quality.
+         */
+        async function compressImage(file, maxWidth, maxHeight, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                const timer = setTimeout(() => reject(new Error("Compression timeout")), 10000);
+                
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height *= maxWidth / width;
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width *= maxHeight / height;
+                                height = maxHeight;
+                            }
+                        }
+
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        canvas.toBlob(blob => {
+                            const newFile = new File([blob], file.name, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now()
+                            });
+                            clearTimeout(timer);
+                            resolve(newFile);
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = error => { clearTimeout(timer); reject(error); };
+                };
+                reader.onerror = error => { clearTimeout(timer); reject(error); };
+            });
+        }
+
         // ── Report Issue Modal ──
         const reportModal = document.getElementById('reportIssueModal');
         const reportContent = document.getElementById('modalContent');
 
         function openReportModal() {
-            reportModal.classList.remove('hidden');
+            reportModal.classList.remove('opacity-0', 'pointer-events-none');
+            reportModal.classList.add('opacity-100', 'pointer-events-auto');
             setTimeout(() => reportContent.classList.remove('translate-y-full'), 10);
-            // Auto-fill with the live geocoded street address
+            
+            // Auto-fill address...
             const locInput = document.getElementById('issueLocationInput');
             if (locInput) {
                 const liveText = document.getElementById('liveLocationText');
@@ -416,7 +432,10 @@
         }
         function closeReportModal() {
             reportContent.classList.add('translate-y-full');
-            setTimeout(() => reportModal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                reportModal.classList.add('opacity-0', 'pointer-events-none');
+                reportModal.classList.remove('opacity-100', 'pointer-events-auto');
+            }, 300);
         }
 
         document.getElementById('reportIssueBtn').addEventListener('click', openReportModal);
@@ -424,12 +443,42 @@
         document.getElementById('modalBackdrop').addEventListener('click', closeReportModal);
 
         document.getElementById('submitIssueBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('submitIssueBtn');
             const form = document.getElementById('issueForm');
+            
+            if (btn.disabled) return;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> Processing...';
+
             const data = new FormData(form);
-            const resp = await fetch('{% url "driver:submit_issue" %}', { method: 'POST', body: data });
-            const json = await resp.json();
-            if (json.success) { alert('Issue submitted!'); closeReportModal(); form.reset(); }
-            else { alert('Please fill in the required fields.'); }
+            // Remove the raw file inputs from FormData
+            data.delete('photos');
+            
+            // Append compressed photos
+            reportPhotos.forEach(p => {
+                data.append('photos', p.blob, 'issue_photo.jpg');
+            });
+
+            try {
+                const resp = await fetch('{% url "driver:submit_issue" %}', { method: 'POST', body: data });
+                const json = await resp.json();
+                if (json.success) { 
+                    alert('Issue submitted successfully!'); 
+                    closeReportModal(); 
+                    form.reset(); 
+                    reportPhotos = [];
+                    document.getElementById('reportPreviewContainer').innerHTML = '';
+                } else { 
+                    alert('Please fill in the required fields.'); 
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Connection error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">send</span> Submit Issue Report';
+            }
         });
 
         // ── Trailer Status Modal ──
@@ -437,12 +486,16 @@
         const statusContent = document.getElementById('statusModalContent');
 
         function openStatusModal() {
-            statusModal.classList.remove('hidden');
+            statusModal.classList.remove('opacity-0', 'pointer-events-none');
+            statusModal.classList.add('opacity-100', 'pointer-events-auto');
             setTimeout(() => statusContent.classList.remove('translate-y-full'), 10);
         }
         function closeStatusModal() {
             statusContent.classList.add('translate-y-full');
-            setTimeout(() => statusModal.classList.add('hidden'), 300);
+            setTimeout(() => {
+                statusModal.classList.add('opacity-0', 'pointer-events-none');
+                statusModal.classList.remove('opacity-100', 'pointer-events-auto');
+            }, 300);
         }
 
         // Apply colors to trailer status values dynamically
@@ -481,17 +534,55 @@
         });
 
         // ── Report photo previews ──
-        const handleFiles = e => {
-            const c = document.getElementById('reportPreviewContainer');
-            for (const f of e.target.files) {
-                const url = URL.createObjectURL(f);
-                const d = document.createElement('div');
-                d.className = 'relative w-16 h-16 rounded-lg overflow-hidden border border-slate-200 shadow-sm';
-                d.innerHTML = `<img src="${url}" class="w-full h-full object-cover">
-            <button type="button" onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-lg">
-                <span class="material-symbols-outlined text-xs">close</span></button>`;
-                c.appendChild(d);
+        let reportPhotos = []; // Store compressed blobs
+
+        const handleFiles = async (e) => {
+            const previewContainer = document.getElementById('reportPreviewContainer');
+            const files = Array.from(e.target.files);
+            
+            for (const f of files) {
+                try {
+                    // Show immediate preview (optional, but good for UX)
+                    const tempUrl = URL.createObjectURL(f);
+                    const placeholderId = 'img-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    
+                    const d = document.createElement('div');
+                    d.id = placeholderId;
+                    d.className = 'relative w-20 h-20 rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50 flex items-center justify-center';
+                    d.innerHTML = `
+                        <img src="${tempUrl}" class="w-full h-full object-cover opacity-40">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-5 h-5 border-2 border-[#0047FF] border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                    `;
+                    previewContainer.appendChild(d);
+
+                    // Compress
+                    const compressed = await compressImage(f, 1280, 1280, 0.7);
+                    const finalUrl = URL.createObjectURL(compressed);
+                    
+                    // Update preview with compressed image and remove loader
+                    d.innerHTML = `
+                        <img src="${finalUrl}" class="w-full h-full object-cover">
+                        <button type="button" class="delete-photo absolute top-1 right-1 bg-red-500/90 text-white p-1 rounded-lg backdrop-blur-sm active:scale-90 transition-transform">
+                            <span class="material-symbols-outlined text-xs">close</span>
+                        </button>
+                    `;
+                    
+                    const photoObj = { id: placeholderId, blob: compressed };
+                    reportPhotos.push(photoObj);
+
+                    d.querySelector('.delete-photo').onclick = () => {
+                        reportPhotos = reportPhotos.filter(p => p.id !== placeholderId);
+                        d.remove();
+                    };
+
+                } catch (err) {
+                    console.error("Compression failed", err);
+                }
             }
+            // Clear inputs to allow re-selecting same file if needed
+            e.target.value = '';
         };
 
         document.getElementById('reportUploadInput').addEventListener('change', handleFiles);

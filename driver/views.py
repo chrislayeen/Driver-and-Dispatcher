@@ -69,6 +69,16 @@ def driver_home(request):
     return render(request, 'driver/home.html', context)
 
 
+def scanner_view(request):
+    """Renders the scanner screen for drivers before they reach the dashboard."""
+    return render(request, 'driver/scanner.html')
+
+
+def trailer_verification_view(request):
+    """Renders the mock Trailer Authentication screen after scanning."""
+    return render(request, 'driver/trailer_auth.html')
+
+
 def pre_inspection(request):
     if request.method == 'POST':
         form = PreInspectionForm(request.POST)
